@@ -491,7 +491,7 @@ export function DocumentTable({
         </div>
 
         {/* Pagination */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="text-muted-foreground text-sm">
             Showing {table.getRowModel().rows.length > 0 ? table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1 : 0} to{" "}
             {Math.min(
@@ -500,9 +500,9 @@ export function DocumentTable({
             )}{" "}
             of {table.getFilteredRowModel().rows.length} rows
           </div>
-          <div className="flex items-center gap-6">
+          <div className="flex flex-wrap items-center gap-4 sm:gap-6">
             <div className="flex items-center gap-2">
-              <span className="text-sm font-medium">Rows per page</span>
+              <span className="text-sm font-medium whitespace-nowrap">Rows per page</span>
               <Select
                 value={`${table.getState().pagination.pageSize}`}
                 onValueChange={(value) => {
@@ -522,7 +522,7 @@ export function DocumentTable({
               </Select>
             </div>
             <div className="flex items-center gap-2">
-              <p className="text-sm font-medium">
+              <p className="text-sm font-medium whitespace-nowrap">
                 Page {table.getState().pagination.pageIndex + 1} of{" "}
                 {table.getPageCount()}
               </p>

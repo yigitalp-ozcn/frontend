@@ -7,12 +7,9 @@ export default function Page() {
       
       <div className="flex-1 rounded-lg border bg-background shadow-sm">
         <div className="p-4">
-          {/* Sayfa içeriği */}
+          {/* Tools content */}
         </div>
       </div>
     </div>
   )
 }
-
-
-

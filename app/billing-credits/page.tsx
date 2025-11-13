@@ -99,7 +99,7 @@ export default function Page() {
                 <CardTitle className="text-lg">Limits</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm">
                       <span className="text-muted-foreground">Hourly Limit</span>
@@ -392,7 +392,7 @@ export default function Page() {
                 <div>
                   <h4 className="text-lg font-semibold mb-4">Custom Amount</h4>
                   <div className="space-y-4">
-                    <div className="flex gap-3 items-end">
+                    <div className="flex flex-col sm:flex-row gap-3 sm:items-end">
                       <div className="space-y-2 flex-1">
                         <Label htmlFor="custom-amount">Amount ($)</Label>
                         <Input
@@ -406,9 +406,8 @@ export default function Page() {
                       </div>
 
                       <Button size="default" onClick={() => handlePurchase(customAmount)}
-                        disabled={customAmount <= 0} className="w-full sm:w-auto" >
-                        Purchase {customAmount}
-                         credits (${customAmount})
+                        disabled={customAmount <= 0} className="w-full sm:w-auto whitespace-nowrap" >
+                        Purchase ${customAmount}
                       </Button>
                     </div>
 
@@ -950,6 +949,3 @@ export default function Page() {
     </div>
   )
 }
-
-
-

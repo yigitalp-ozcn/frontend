@@ -11,7 +11,7 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty"
-import { FolderX, ArrowUpRightIcon, Plus, Upload, Edit, Trash2, FileText, Calendar, Globe, Type, Eye } from "lucide-react"
+import { FolderX, ArrowUpRightIcon, Plus, Upload, Trash2, FileText, Globe, Type, Eye } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -53,7 +53,7 @@ const mockKnowledgeBases: KnowledgeBase[] = [
   {
     id: "1",
     name: "Product Documentation",
-    description: "Complete product documentation including user guides",
+    description: "Complete product documentation ",
     fileCount: 24,
     websiteCount: 5,
     textCount: 12,
@@ -585,28 +585,27 @@ export default function Page() {
                   {/* Row 2: Content information */}
                   <CardContent className="space-y-3">
                     <CardDescription className="line-clamp-2">
-                    <span>Description: {kb.description}</span>
+                      {kb.description}
                     </CardDescription>
                     <div className="flex items-center justify-between text-sm flex-wrap gap-2">
-                      <span className="text-muted-foreground">Created at: {new Date(kb.createdAt).toLocaleDateString()}</span>
+                      <span className="text-muted-foreground">Created: {new Date(kb.createdAt).toLocaleDateString()}</span>
                       <div className="flex items-center gap-2">
                         <div className="flex items-center gap-1.5">
                           <FileText className="h-4 w-4 text-muted-foreground" />
-                          <span>Files: {kb.fileCount}</span>
+                          <span>{kb.fileCount}</span>
                         </div>
                         <span className="text-muted-foreground">•</span>
                         <div className="flex items-center gap-1.5">
                           <Globe className="h-4 w-4 text-muted-foreground" />
-                          <span>Websites: {kb.websiteCount}</span>
+                          <span>{kb.websiteCount}</span>
                         </div>
                         <span className="text-muted-foreground">•</span>
                         <div className="flex items-center gap-1.5">
                           <Type className="h-4 w-4 text-muted-foreground" />
-                          <span>Texts: {kb.textCount}</span>
+                          <span>{kb.textCount}</span>
                         </div>
                       </div>
                     </div>
-                    
                   </CardContent>
 
                   {/* Row 3: Footer with action buttons */}
@@ -637,5 +636,3 @@ export default function Page() {
     </div>
   )
 }
-
-

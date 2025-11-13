@@ -32,7 +32,7 @@ import { Calendar } from "@/components/ui/calendar"
 import { format } from "date-fns"
 import { Calendar as CalendarIcon } from "lucide-react"
 import { DateRange } from "react-day-picker"
-import { Download, Search, ArrowUpDown, Filter, X, XCircle, Upload } from "lucide-react"
+import { Search, ArrowUpDown, Filter, X, Upload } from "lucide-react"
 import { DataTable } from "@/components/call-table"
 import { Badge } from "@/components/ui/badge"
 
@@ -527,82 +527,9 @@ export default function Page() {
       </PageHeader>
       
       {/* Search, Sort, Filter Controls */}
-      <div className="flex items-center justify-between gap-4">
-        <div className="flex items-center gap-3 flex-1">
-          <div className="relative w-[300px]">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              placeholder="Search by customer, phone, or call ID..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9 h-9"
-            />
-          </div>
-
-          {/* Active Filters */}
-          {getActiveFilterGroups().length > 0 && (
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-sm text-muted-foreground">Showing:</span>
-              {getActiveFilterGroups().map((group) => (
-                <Badge
-                  key={group.category}
-                  variant="secondary"
-                  className="gap-1.5 pl-2.5 pr-1.5 py-1"
-                >
-                  <span className="text-xs">
-                    <span className="font-medium">{group.category}:</span>{" "}
-                    {group.values.join(", ")}
-                  </span>
-                  <button
-                    onClick={group.onClear}
-                    className="ml-1 rounded-full hover:bg-muted-foreground/20 p-0.5"
-                    aria-label={`Clear ${group.category} filter`}
-                  >
-                    <X className="h-3 w-3" />
-                  </button>
-                </Badge>
-              ))}
-              {getActiveFilterGroups().length > 1 && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={clearAllFilters}
-                  className="h-7 text-xs"
-                >
-                  Clear all
-                </Button>
-              )}
-            </div>
-          )}
-        </div>
-        
-        <div className="flex items-center gap-3">
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button variant="outline" className="justify-start gap-2 w-auto">
-                <ArrowUpDown className="h-4 w-4" />
-                {sortOrder === "newest" ? "Newest to Oldest" : "Oldest to Newest"}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-[200px] p-2" align="start">
-              <div className="space-y-1">
-                <Button
-                  variant={sortOrder === "newest" ? "secondary" : "ghost"}
-                  className="w-full justify-start font-normal text-sm h-8"
-                  onClick={() => setSortOrder("newest")}
-                >
-                  Newest to Oldest
-                </Button>
-                <Button
-                  variant={sortOrder === "oldest" ? "secondary" : "ghost"}
-                  className="w-full justify-start font-normal text-sm h-8"
-                  onClick={() => setSortOrder("oldest")}
-                >
-                  Oldest to Newest
-                </Button>
-              </div>
-            </PopoverContent>
-          </Popover>
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+          <DateRangePicker />
 
           <Dialog open={filterDialogOpen} onOpenChange={setFilterDialogOpen}>
             <DialogTrigger asChild>
@@ -781,8 +708,80 @@ export default function Page() {
             </DialogContent>
           </Dialog>
 
-          <DateRangePicker />
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="outline" className="justify-start gap-2 w-auto">
+                <ArrowUpDown className="h-4 w-4" />
+                <span className="hidden sm:inline">{sortOrder === "newest" ? "Newest to Oldest" : "Oldest to Newest"}</span>
+                <span className="sm:hidden">Sort</span>
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-[200px] p-2" align="start">
+              <div className="space-y-1">
+                <Button
+                  variant={sortOrder === "newest" ? "secondary" : "ghost"}
+                  className="w-full justify-start font-normal text-sm h-8"
+                  onClick={() => setSortOrder("newest")}
+                >
+                  Newest to Oldest
+                </Button>
+                <Button
+                  variant={sortOrder === "oldest" ? "secondary" : "ghost"}
+                  className="w-full justify-start font-normal text-sm h-8"
+                  onClick={() => setSortOrder("oldest")}
+                >
+                  Oldest to Newest
+                </Button>
+              </div>
+            </PopoverContent>
+          </Popover>
+
+          <div className="relative ml-auto w-[300px]">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              placeholder="Search by customer, phone, or call ID..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-9 h-9"
+            />
+          </div>
         </div>
+
+        {/* Active Filters */}
+        {getActiveFilterGroups().length > 0 && (
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-sm text-muted-foreground">Showing:</span>
+            {getActiveFilterGroups().map((group) => (
+              <Badge
+                key={group.category}
+                variant="secondary"
+                className="gap-1.5 pl-2.5 pr-1.5 py-1"
+              >
+                <span className="text-xs">
+                  <span className="font-medium">{group.category}:</span>{" "}
+                  {group.values.join(", ")}
+                </span>
+                <button
+                  onClick={group.onClear}
+                  className="ml-1 rounded-full hover:bg-muted-foreground/20 p-0.5"
+                  aria-label={`Clear ${group.category} filter`}
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              </Badge>
+            ))}
+            {getActiveFilterGroups().length > 1 && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={clearAllFilters}
+                className="h-7 text-xs"
+              >
+                Clear all
+              </Button>
+            )}
+          </div>
+        )}
       </div>
 
       <DataTable data={filteredData} defaultPageSize={20} />

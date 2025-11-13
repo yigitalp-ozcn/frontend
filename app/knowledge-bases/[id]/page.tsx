@@ -7,12 +7,8 @@ import {
   ChevronRight, 
   Search, 
   FileText,
-  Link as LinkIcon,
-  AlignLeft,
   ArrowUpDown,
   Filter,
-  FileIcon,
-  File,
   Pencil,
   Check,
   X,
@@ -181,7 +177,7 @@ export default function KnowledgeBasePage() {
       />
 
       {/* Two Column Layout */}
-      <div className="flex flex-1 gap-4 min-h-0">
+      <div className="flex flex-col lg:flex-row flex-1 gap-4 min-h-0">
         {/* Left Panel - Knowledge Base List */}
         <div className="flex-1 flex flex-col rounded-lg border bg-background shadow-sm overflow-hidden">
           {/* Header Section */}
@@ -294,8 +290,8 @@ export default function KnowledgeBasePage() {
               </div>
               
               {/* Search, Sort, Filter Controls */}
-              <div className="flex items-center gap-3 self-center">
-                <div className="relative w-[200px]">
+              <div className="flex flex-wrap items-center gap-3 self-center">
+                <div className="relative w-full sm:w-[200px]">
                   <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                   <Input
                     placeholder="Search..."
@@ -373,7 +369,7 @@ export default function KnowledgeBasePage() {
         </div>
 
         {/* Right Panel - Upload Form (Always Visible) */}
-        <div className="w-[420px] flex flex-col rounded-lg border bg-background shadow-sm overflow-hidden">
+        <div className="w-full lg:w-[420px] flex flex-col rounded-lg border bg-background shadow-sm overflow-hidden">
           {/* Header */}
           <div className="p-6 border-b flex items-start">
             <div className="space-y-1">
@@ -543,4 +539,3 @@ export default function KnowledgeBasePage() {
     </div>
   )
 }
-

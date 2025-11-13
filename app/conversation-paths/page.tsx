@@ -7,12 +7,9 @@ export default function Page() {
       
       <div className="flex-1 rounded-lg border bg-background shadow-sm">
         <div className="p-4">
-          {/* Sayfa içeriği */}
+          {/* Conversation paths content */}
         </div>
       </div>
     </div>
   )
 }
-
-
-

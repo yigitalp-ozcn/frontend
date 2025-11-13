@@ -25,4 +25,3 @@ export function PageHeader({ title, children }: PageHeaderProps) {
     </header>
   )
 }
-
