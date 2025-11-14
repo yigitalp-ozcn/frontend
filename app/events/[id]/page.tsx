@@ -1,5 +1,6 @@
 "use client"
 
+import * as React from "react"
 import { useState } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { PageHeader } from "@/components/page-header"
@@ -16,6 +17,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import {
+  IconChevronLeft,
+  IconChevronRight,
+} from "@tabler/icons-react"
 import {
   Dialog,
   DialogContent,
@@ -59,6 +64,10 @@ export default function EventPage() {
   const [isListenDialogOpen, setIsListenDialogOpen] = useState(false)
   const [isListening, setIsListening] = useState(false)
   const [eventReceived, setEventReceived] = useState(false)
+  
+  // Pagination State
+  const [currentPage, setCurrentPage] = useState(1)
+  const [itemsPerPage, setItemsPerPage] = useState(5)
 
   // Mock trigger history data
   const triggerHistory = [
@@ -90,7 +99,76 @@ export default function EventPage() {
       callId: "call_jkl012",
       duration: "3m 10s",
     },
+    {
+      id: "5",
+      triggeredAt: "2024-01-14 14:20:45",
+      status: "success" as const,
+      callId: "call_mno345",
+      duration: "1m 55s",
+    },
+    {
+      id: "6",
+      triggeredAt: "2024-01-14 11:10:30",
+      status: "failed" as const,
+      callId: "call_pqr678",
+      duration: "-",
+    },
+    {
+      id: "7",
+      triggeredAt: "2024-01-14 09:35:15",
+      status: "success" as const,
+      callId: "call_stu901",
+      duration: "2m 30s",
+    },
+    {
+      id: "8",
+      triggeredAt: "2024-01-13 18:45:22",
+      status: "success" as const,
+      callId: "call_vwx234",
+      duration: "3m 05s",
+    },
+    {
+      id: "9",
+      triggeredAt: "2024-01-13 15:20:18",
+      status: "success" as const,
+      callId: "call_yza567",
+      duration: "1m 40s",
+    },
+    {
+      id: "10",
+      triggeredAt: "2024-01-13 12:55:40",
+      status: "failed" as const,
+      callId: "call_bcd890",
+      duration: "-",
+    },
+    {
+      id: "11",
+      triggeredAt: "2024-01-13 10:30:55",
+      status: "success" as const,
+      callId: "call_efg123",
+      duration: "2m 15s",
+    },
+    {
+      id: "12",
+      triggeredAt: "2024-01-12 16:15:30",
+      status: "success" as const,
+      callId: "call_hij456",
+      duration: "1m 50s",
+    },
   ]
+  
+  // Pagination calculations
+  const totalPages = Math.max(1, Math.ceil(triggerHistory.length / itemsPerPage))
+  const startIndex = (currentPage - 1) * itemsPerPage
+  const endIndex = startIndex + itemsPerPage
+  const paginatedHistory = triggerHistory.slice(startIndex, endIndex)
+  
+  // Reset to page 1 if current page exceeds total pages after itemsPerPage change
+  React.useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(1)
+    }
+  }, [currentPage, totalPages])
 
   const webhookUrl = `https://api.yourapp.com/events/${eventId}`
 
@@ -343,9 +421,9 @@ export default function EventPage() {
 
       {/* Two Column Layout */}
       <div className="flex flex-col lg:flex-row flex-1 gap-4 min-h-0">
-        {/* Left Panel - Search Configuration */}
-        <div className="flex-1 flex flex-col rounded-lg border bg-background shadow-sm overflow-hidden">
-          <div className="p-6 border-b">
+        {/* Left Panel - Event Configuration (Scrollable) */}
+        <div className="flex-1 flex flex-col rounded-lg border bg-background shadow-sm overflow-hidden min-h-0">
+          <div className="p-6 border-b flex-shrink-0">
             <div className="flex items-center gap-2 mb-2">
               <Radio className="w-5 h-5" />
               <h2 className="text-xl font-semibold">Event Configuration</h2>
@@ -460,55 +538,112 @@ export default function EventPage() {
                     <p className="text-sm text-muted-foreground">No triggers yet</p>
                   </div>
                 ) : (
-                  <div className="space-y-2">
-                    {triggerHistory.map((trigger) => (
-                      <div
-                        key={trigger.id}
-                        className="rounded-lg border bg-background p-3 hover:bg-accent/50 transition-colors"
-                      >
-                        <div className="flex items-start justify-between gap-3">
-                          <div className="flex items-start gap-3 flex-1 min-w-0">
-                            {trigger.status === "success" ? (
-                              <CheckCircle2 className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" />
-                            ) : (
-                              <XCircle className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" />
-                            )}
-                            <div className="flex-1 min-w-0 space-y-1">
-                              <div className="flex items-center gap-2">
-                                <Phone className="w-3 h-3 text-muted-foreground" />
-                                <span className="text-xs font-mono text-muted-foreground truncate">
-                                  {trigger.callId}
-                                </span>
+                  <>
+                    <div className="space-y-2">
+                      {paginatedHistory.map((trigger) => (
+                        <div
+                          key={trigger.id}
+                          className="rounded-lg border bg-background p-3 hover:bg-accent/50 transition-colors"
+                        >
+                          <div className="flex items-start justify-between gap-3">
+                            <div className="flex items-start gap-3 flex-1 min-w-0">
+                              {trigger.status === "success" ? (
+                                <CheckCircle2 className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" />
+                              ) : (
+                                <XCircle className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" />
+                              )}
+                              <div className="flex-1 min-w-0 space-y-1">
+                                <div className="flex items-center gap-2">
+                                  <Phone className="w-3 h-3 text-muted-foreground" />
+                                  <span className="text-xs font-mono text-muted-foreground truncate">
+                                    {trigger.callId}
+                                  </span>
+                                </div>
+                                <p className="text-xs text-muted-foreground">
+                                  {trigger.triggeredAt}
+                                </p>
                               </div>
-                              <p className="text-xs text-muted-foreground">
-                                {trigger.triggeredAt}
-                              </p>
+                            </div>
+                            <div className="text-right flex-shrink-0">
+                              <span className="text-xs font-medium">
+                                {trigger.duration}
+                              </span>
                             </div>
                           </div>
-                          <div className="text-right flex-shrink-0">
-                            <span className="text-xs font-medium">
-                              {trigger.duration}
-                            </span>
+                        </div>
+                      ))}
+                    </div>
+                    
+                    {/* Pagination Controls */}
+                    {triggerHistory.length > 0 && (
+                      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between pt-4 border-t">
+                        <div className="text-muted-foreground text-sm">
+                          Showing {startIndex + 1} to{" "}
+                          {Math.min(endIndex, triggerHistory.length)} of{" "}
+                          {triggerHistory.length} triggers
+                        </div>
+                        <div className="flex flex-wrap items-center gap-4 sm:gap-6">
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm font-medium whitespace-nowrap">Rows per page</span>
+                            <Select
+                              value={`${itemsPerPage}`}
+                              onValueChange={(value) => {
+                                setItemsPerPage(Number(value))
+                                setCurrentPage(1)
+                              }}
+                            >
+                              <SelectTrigger className="h-8 w-[70px]">
+                                <SelectValue placeholder={itemsPerPage} />
+                              </SelectTrigger>
+                              <SelectContent side="top">
+                                {[5, 10, 20, 50].map((pageSize) => (
+                                  <SelectItem key={pageSize} value={`${pageSize}`}>
+                                    {pageSize}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <p className="text-sm font-medium whitespace-nowrap">
+                              Page {currentPage} of {totalPages}
+                            </p>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Button
+                              variant="outline"
+                              size="icon"
+                              className="h-8 w-8"
+                              onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                              disabled={currentPage === 1}
+                            >
+                              <IconChevronLeft className="h-4 w-4" />
+                              <span className="sr-only">Previous page</span>
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="icon"
+                              className="h-8 w-8"
+                              onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                              disabled={currentPage === totalPages}
+                            >
+                              <IconChevronRight className="h-4 w-4" />
+                              <span className="sr-only">Next page</span>
+                            </Button>
                           </div>
                         </div>
                       </div>
-                    ))}
-                  </div>
+                    )}
+                  </>
                 )}
               </div>
-
-              {triggerHistory.length > 0 && (
-                <Button variant="outline" className="w-full" size="sm">
-                  View All History
-                </Button>
-              )}
             </div>
           </div>
         </div>
 
-        {/* Right Panel - POST Info, Test & Code Preview */}
-        <div className="w-full lg:w-[520px] flex flex-col rounded-lg border bg-background shadow-sm overflow-hidden">
-          <div className="p-6 border-b">
+        {/* Right Panel - POST Info, Test & Code Preview (Fixed) */}
+        <div className="w-full lg:w-[520px] flex flex-col rounded-lg border bg-background shadow-sm overflow-hidden lg:h-full lg:min-h-0">
+          <div className="p-6 border-b flex-shrink-0">
             <h3 className="text-xl font-semibold mb-1">Event Endpoint</h3>
             <p className="text-sm text-muted-foreground">
               Test your event and view integration code
