@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import { PageHeader } from "@/components/page-header"
 import {
@@ -141,25 +141,25 @@ export default function Page() {
   const [knowledgeBaseDescription, setKnowledgeBaseDescription] = useState("")
   const [importDescription, setImportDescription] = useState("")
 
-  const handleFileDrop = (files: FileWithPreview[]) => {
+  const handleFileDrop = useCallback((files: FileWithPreview[]) => {
     setUploadedFiles(files)
     console.log("Files uploaded:", files)
-  }
+  }, [])
 
-  const handleUpload = () => {
+  const handleUpload = useCallback(() => {
     // Here you would implement the actual upload logic
     console.log("Uploading files:", uploadedFiles)
     // Close dialog after upload
     setIsUploadDialogOpen(false)
     setUploadedFiles([])
-  }
+  }, [uploadedFiles])
 
-  const handleZipDrop = (files: FileWithPreview[]) => {
+  const handleZipDrop = useCallback((files: FileWithPreview[]) => {
     setImportedZip(files)
     console.log("ZIP file uploaded:", files)
-  }
+  }, [])
 
-  const handleImport = () => {
+  const handleImport = useCallback(() => {
     // Here you would implement the actual import logic
     console.log("Importing knowledge base:", {
       name: knowledgeBaseName,
@@ -171,14 +171,14 @@ export default function Page() {
     setImportedZip([])
     setKnowledgeBaseName("")
     setImportDescription("")
-  }
+  }, [knowledgeBaseName, importDescription, importedZip])
 
-  const handleCreateFileDrop = (files: FileWithPreview[]) => {
+  const handleCreateFileDrop = useCallback((files: FileWithPreview[]) => {
     setCreateFiles(files)
     console.log("Files for new knowledge base:", files)
-  }
+  }, [])
 
-  const handleCreate = () => {
+  const handleCreate = useCallback(() => {
     // Here you would implement the actual create logic
     console.log("Creating knowledge base:", {
       name: knowledgeBaseName,
@@ -190,20 +190,20 @@ export default function Page() {
     setCreateFiles([])
     setKnowledgeBaseName("")
     setKnowledgeBaseDescription("")
-  }
+  }, [knowledgeBaseName, knowledgeBaseDescription, createFiles])
 
-  const handleDeleteClick = (id: string) => {
+  const handleDeleteClick = useCallback((id: string) => {
     setSelectedKbId(id)
     setIsDeleteDialogOpen(true)
-  }
+  }, [])
 
-  const handleDeleteConfirm = () => {
+  const handleDeleteConfirm = useCallback(() => {
     // Here you would implement the actual delete logic
     console.log("Deleting knowledge base:", selectedKbId)
     // Close dialog after deletion
     setIsDeleteDialogOpen(false)
     setSelectedKbId(null)
-  }
+  }, [selectedKbId])
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4">

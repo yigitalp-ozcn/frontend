@@ -91,6 +91,30 @@ interface DocumentTableProps {
   onBulkDelete?: (ids: string[]) => void
 }
 
+// Helper function to get status configuration (defined outside component to avoid recreation)
+const getStatusConfig = (status: Document["status"]) => {
+  switch (status) {
+    case "ready":
+      return {
+        icon: <CircleCheckBig className="size-4 text-green-500 dark:text-green-400" />,
+        text: "Ready",
+        colorClass: "text-green-600 dark:text-green-400 border-green-500/50"
+      }
+    case "error":
+      return {
+        icon: <CircleX className="size-4 text-red-500 dark:text-red-400" />,
+        text: "Error",
+        colorClass: "text-red-600 dark:text-red-400 border-red-500/50"
+      }
+    case "processing":
+      return {
+        icon: <Clock className="size-4 text-yellow-600 dark:text-yellow-400" />,
+        text: "Processing",
+        colorClass: "text-yellow-600 dark:text-yellow-400 border-yellow-500/50"
+      }
+  }
+}
+
 const createColumns = (
   onEdit?: (id: string, name: string, description: string) => void,
   onDownload?: (id: string) => void,
@@ -169,30 +193,13 @@ const createColumns = (
     accessorKey: "status",
     header: () => <div className="text-center">Status</div>,
     cell: ({ row }) => {
-      const status = row.original.status
-      let icon: React.ReactNode
-      let statusText: string
-      let colorClass: string
-
-      if (status === "ready") {
-        icon = <CircleCheckBig className="size-4 text-green-500 dark:text-green-400" />
-        statusText = "Ready"
-        colorClass = "text-green-600 dark:text-green-400 border-green-500/50"
-      } else if (status === "error") {
-        icon = <CircleX className="size-4 text-red-500 dark:text-red-400" />
-        statusText = "Error"
-        colorClass = "text-red-600 dark:text-red-400 border-red-500/50"
-      } else {
-        icon = <Clock className="size-4 text-yellow-600 dark:text-yellow-400" />
-        statusText = "Processing"
-        colorClass = "text-yellow-600 dark:text-yellow-400 border-yellow-500/50"
-      }
+      const { icon, text, colorClass } = getStatusConfig(row.original.status)
 
       return (
         <div className="flex justify-center w-[160px]">
           <Badge variant="outline" className={`gap-1 ${colorClass}`}>
             {icon}
-            {statusText}
+            {text}
           </Badge>
         </div>
       )

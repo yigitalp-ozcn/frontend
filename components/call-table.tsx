@@ -68,6 +68,22 @@ export const schema = z.object({
   campaign: z.string(),
 })
 
+// Helper function to get status icon (defined outside to avoid recreation on each render)
+const getStatusIcon = (status: string) => {
+  switch (status) {
+    case "Completed":
+      return <IconCircleCheckFilled className="fill-green-500 dark:fill-green-400 size-4" />
+    case "Failed":
+      return <IconCircleXFilled className="fill-red-500 dark:fill-red-400 size-4" />
+    case "Missed":
+      return <IconAlertCircleFilled className="fill-yellow-500 dark:fill-yellow-400 size-4" />
+    case "In Progress":
+      return <IconClockPause className="size-4" />
+    default:
+      return null
+  }
+}
+
 const columns: ColumnDef<z.infer<typeof schema>>[] = [
   {
     accessorKey: "callType",
@@ -122,19 +138,8 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     header: () => <div className="text-center">Status</div>,
     cell: ({ row }) => {
       const status = row.original.status
-      
-      let icon = null
-      
-      if (status === "Completed") {
-        icon = <IconCircleCheckFilled className="fill-green-500 dark:fill-green-400 size-4" />
-      } else if (status === "Failed") {
-        icon = <IconCircleXFilled className="fill-red-500 dark:fill-red-400 size-4" />
-      } else if (status === "Missed") {
-        icon = <IconAlertCircleFilled className="fill-yellow-500 dark:fill-yellow-400 size-4" />
-      } else if (status === "In Progress") {
-        icon = <IconClockPause className="size-4" />
-      }
-      
+      const icon = getStatusIcon(status)
+
       return (
         <div className="flex justify-center">
           <Badge variant="outline" className="text-muted-foreground px-1.5 gap-1">

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useCallback, useMemo } from "react"
 import { PageHeader } from "@/components/page-header"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardHeader, CardTitle, CardContent, CardFooter, CardDescription, CardAction } from "@/components/ui/card"
@@ -34,34 +34,40 @@ export default function Page() {
   const [initialRefillThreshold, setInitialRefillThreshold] = useState(5)
   
   // Check if auto recharge values changed
-  const hasAutoRechargeChanged = refillAmount !== initialRefillAmount || refillThreshold !== initialRefillThreshold
-  
+  const hasAutoRechargeChanged = useMemo(
+    () => refillAmount !== initialRefillAmount || refillThreshold !== initialRefillThreshold,
+    [refillAmount, initialRefillAmount, refillThreshold, initialRefillThreshold]
+  )
+
   // Handle auto recharge save
-  const handleAutoRechargeSave = () => {
+  const handleAutoRechargeSave = useCallback(() => {
     // Save logic here (API call, etc.)
     console.log("Saving auto recharge settings:", { refillAmount, refillThreshold })
-    
+
     // Update initial values to current values
     setInitialRefillAmount(refillAmount)
     setInitialRefillThreshold(refillThreshold)
-  }
+  }, [refillAmount, refillThreshold])
   
   // Initial values for credit alert settings
   const [initialAlertRecipients, setInitialAlertRecipients] = useState("")
   const [initialCriticalAlertEnabled, setInitialCriticalAlertEnabled] = useState(false)
   
   // Check if credit alert settings changed
-  const hasAlertSettingsChanged = alertRecipients !== initialAlertRecipients || criticalAlertEnabled !== initialCriticalAlertEnabled
-  
+  const hasAlertSettingsChanged = useMemo(
+    () => alertRecipients !== initialAlertRecipients || criticalAlertEnabled !== initialCriticalAlertEnabled,
+    [alertRecipients, initialAlertRecipients, criticalAlertEnabled, initialCriticalAlertEnabled]
+  )
+
   // Handle credit alert settings save
-  const handleAlertSettingsSave = () => {
+  const handleAlertSettingsSave = useCallback(() => {
     // Save logic here (API call, etc.)
     console.log("Saving credit alert settings:", { alertRecipients, criticalAlertEnabled })
-    
+
     // Update initial values to current values
     setInitialAlertRecipients(alertRecipients)
     setInitialCriticalAlertEnabled(criticalAlertEnabled)
-  }
+  }, [alertRecipients, criticalAlertEnabled])
   
   // Billing Information data
   const [billingName, setBillingName] = useState("Yiğitalp Özcan")
@@ -74,15 +80,15 @@ export default function Page() {
   const [postalCode, setPostalCode] = useState("94025")
   const [country, setCountry] = useState("United States of America")
 
-  const handleCustomAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleCustomAmountChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value) || 0
     setCustomAmount(value)
-  }
+  }, [])
 
-  const handlePurchase = (amount: number) => {
+  const handlePurchase = useCallback((amount: number) => {
     console.log(`Purchasing $${amount} worth of credits`)
     // Implement purchase logic here
-  }
+  }, [])
   return (
     <div className="flex flex-1 flex-col gap-4 p-4">
       <PageHeader title="Billing & Credits" />
