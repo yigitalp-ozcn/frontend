@@ -36,6 +36,7 @@ import {
 } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
+import { Progress } from "@/components/ui/progress"
 
 // Mock data for knowledge bases
 type KnowledgeBase = {
@@ -48,6 +49,9 @@ type KnowledgeBase = {
   createdAt: string
   status: "processing" | "ready" | "active" | "empty"
 }
+
+// Document limits
+const DOCUMENT_LIMIT = 100
 
 const mockKnowledgeBases: KnowledgeBase[] = [
   {
@@ -566,6 +570,40 @@ export default function Page() {
           </div>
         ) : (
           <div className="p-6">
+            {/* Document Limit Progress - Only show for active knowledge bases */}
+            {(() => {
+              const activeKbs = mockKnowledgeBases.filter(kb => kb.status === "active")
+              if (activeKbs.length === 0) return null
+              
+              const totalDocuments = activeKbs.reduce((sum, kb) => 
+                sum + kb.fileCount + kb.websiteCount + kb.textCount, 0
+              )
+              const documentPercentage = (totalDocuments / DOCUMENT_LIMIT) * 100
+              
+              return (
+                <div className="mb-6">
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="text-sm font-medium">Document Limit</h3>
+                    <span className="text-sm text-muted-foreground">
+                      {totalDocuments} / {DOCUMENT_LIMIT} documents
+                    </span>
+                  </div>
+                  <div className="w-full bg-secondary rounded-full h-2 overflow-hidden">
+                    <div 
+                      className={`h-full transition-all ${
+                        documentPercentage >= 90 
+                          ? 'bg-red-500' 
+                          : documentPercentage >= 70 
+                            ? 'bg-yellow-500' 
+                            : 'bg-primary'
+                      }`}
+                      style={{ width: `${documentPercentage}%` }}
+                    />
+                  </div>
+                </div>
+              )
+            })()}
+
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {mockKnowledgeBases.map((kb) => (
                 <Card key={kb.id}>

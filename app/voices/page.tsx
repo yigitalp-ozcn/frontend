@@ -739,7 +739,7 @@ export default function Page() {
 
         <TabsContent value="curated" className="flex flex-1 flex-col">
           <div className="flex-1 rounded-lg border bg-background shadow-sm">
-            <div className="p-4 space-y-4">
+            <div className="p-6 space-y-4">
               {/* Search, Filter and Customize TTS Text */}
               <div className="flex items-center gap-3">
                 <div className="relative flex-1">
