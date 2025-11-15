@@ -608,7 +608,7 @@ export default function Page() {
               {mockKnowledgeBases.map((kb) => (
                 <Card key={kb.id}>
                   {/* Row 1: Header with title and status badge */}
-                  <CardHeader>
+                  <CardHeader className="mb-[-10px]">
                     <CardTitle className="text-lg">{kb.name}</CardTitle>
                     <CardAction>
                       <Badge variant="outline" className={`gap-1.5 ${getStatusConfig(kb.status).color}`}>

@@ -1,11 +1,12 @@
 "use client"
 
 import {
-  CircleUser,
+  Settings,
   ChevronsUpDown,
   LogOut,
   CreditCard
 } from "lucide-react"
+import Link from "next/link"
 
 import {
   Avatar,
@@ -85,13 +86,11 @@ export function NavUser({
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <CircleUser />
-                Account
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CreditCard />
-                Billing & Credits
+              <DropdownMenuItem asChild>
+                <Link href="/settings">
+                  <Settings />
+                  Settings
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <ThemeToggle />

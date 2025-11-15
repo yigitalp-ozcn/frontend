@@ -19,7 +19,7 @@
     "hooks": "@/hooks"
   },
   "registries": {
-    
+    "@elevenlabs-ui": "https://ui.elevenlabs.io/r/{name}.json"
   }
 }
 
