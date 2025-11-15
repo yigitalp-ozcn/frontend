@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import { useRouter } from "next/navigation"
 import { PageHeader } from "@/components/page-header"
 import {
@@ -44,6 +44,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { getStatusConfig, getCallerTypeConfig } from "@/lib/helpers"
+import { COUNTRY_CODES } from "@/lib/constants"
 
 // Mock data for agents
 type Agent = {
@@ -162,65 +164,6 @@ const mockAgents: Agent[] = [
   },
 ]
 
-const getStatusConfig = (status: Agent["status"]) => {
-  switch (status) {
-    case "active":
-      return {
-        label: "Active",
-        color: "border-green-500 text-green-500",
-        dotColor: "bg-green-500",
-      }
-    case "inactive":
-      return {
-        label: "Inactive",
-        color: "border-red-500 text-red-500",
-        dotColor: "bg-red-500",
-      }
-  }
-}
-
-const getCallerTypeConfig = (callerType: Agent["callerType"]) => {
-  switch (callerType) {
-    case "inbound":
-      return {
-        label: "Inbound",
-        color: "border-blue-500 text-blue-500",
-      }
-    case "outbound":
-      return {
-        label: "Outbound",
-        color: "border-purple-500 text-purple-500",
-      }
-  }
-}
-
-const getTimeAgo = (date: string) => {
-  const now = new Date()
-  const createdDate = new Date(date)
-  const diffTime = Math.abs(now.getTime() - createdDate.getTime())
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-  
-  if (diffDays === 0) return "today"
-  if (diffDays === 1) return "1 day ago"
-  if (diffDays < 30) return `${diffDays} days ago`
-  if (diffDays < 60) return "1 month ago"
-  if (diffDays < 365) return `${Math.floor(diffDays / 30)} months ago`
-  return `${Math.floor(diffDays / 365)} year${Math.floor(diffDays / 365) > 1 ? 's' : ''} ago`
-}
-
-// Country codes data
-const countryCodes = [
-  { code: "+1", country: "US/CA", flag: "🇺🇸" },
-  { code: "+44", country: "UK", flag: "🇬🇧" },
-  { code: "+90", country: "TR", flag: "🇹🇷" },
-  { code: "+49", country: "DE", flag: "🇩🇪" },
-  { code: "+33", country: "FR", flag: "🇫🇷" },
-  { code: "+39", country: "IT", flag: "🇮🇹" },
-  { code: "+34", country: "ES", flag: "🇪🇸" },
-  { code: "+91", country: "IN", flag: "🇮🇳" },
-  { code: "+86", country: "CN", flag: "🇨🇳" },
-  { code: "+81", country: "JP", flag: "🇯🇵" },
-]
 
 export default function Page() {
   const router = useRouter()
@@ -278,7 +221,10 @@ export default function Page() {
     setSelectedCountryCode("+1")
   }
 
-  const selectedAgent = mockAgents.find((agent) => agent.id === selectedAgentId)
+  const selectedAgent = useMemo(() =>
+    mockAgents.find((agent) => agent.id === selectedAgentId),
+    [selectedAgentId]
+  )
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4">
@@ -453,7 +399,7 @@ export default function Page() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {countryCodes.map((country) => (
+                    {COUNTRY_CODES.map((country) => (
                       <SelectItem key={country.code} value={country.code}>
                         <span className="flex items-center gap-2">
                           <span>{country.flag}</span>

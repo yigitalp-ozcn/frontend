@@ -35,6 +35,7 @@ import { DateRange } from "react-day-picker"
 import { Search, ArrowUpDown, Filter, X, Upload } from "lucide-react"
 import { DataTable } from "@/components/call-table"
 import { Badge } from "@/components/ui/badge"
+import { CALL_TYPES, CALL_STATUSES, AGENT_OPTIONS, CAMPAIGN_OPTIONS } from "@/lib/constants"
 
 // Mock data for call logs
 const mockCallLogs = [
@@ -132,6 +133,22 @@ export default function Page() {
   const [reportAgents, setReportAgents] = useState<string[]>([])
   const [reportCampaigns, setReportCampaigns] = useState<string[]>([])
 
+  // Generic toggle function for filters - consolidates 8 duplicate functions into one
+  const createToggle = <T,>(setter: React.Dispatch<React.SetStateAction<T[]>>) => {
+    return (item: T) => {
+      setter((prev) => prev.includes(item) ? prev.filter((i) => i !== item) : [...prev, item])
+    }
+  }
+
+  const toggleReportCallType = createToggle(setReportCallTypes)
+  const toggleReportStatus = createToggle(setReportStatuses)
+  const toggleReportAgent = createToggle(setReportAgents)
+  const toggleReportCampaign = createToggle(setReportCampaigns)
+  const toggleCallType = createToggle(setSelectedCallTypes)
+  const toggleStatus = createToggle(setSelectedStatuses)
+  const toggleAgent = createToggle(setSelectedAgents)
+  const toggleCampaign = createToggle(setSelectedCampaigns)
+
   const handleDownloadReport = () => {
     console.log("Downloading report...", {
       email: reportEmail,
@@ -150,54 +167,6 @@ export default function Page() {
     setReportStatuses([])
     setReportAgents([])
     setReportCampaigns([])
-  }
-
-  const toggleReportCallType = (type: string) => {
-    setReportCallTypes((prev) =>
-      prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]
-    )
-  }
-
-  const toggleReportStatus = (status: string) => {
-    setReportStatuses((prev) =>
-      prev.includes(status) ? prev.filter((s) => s !== status) : [...prev, status]
-    )
-  }
-
-  const toggleReportAgent = (agent: string) => {
-    setReportAgents((prev) =>
-      prev.includes(agent) ? prev.filter((a) => a !== agent) : [...prev, agent]
-    )
-  }
-
-  const toggleReportCampaign = (campaign: string) => {
-    setReportCampaigns((prev) =>
-      prev.includes(campaign) ? prev.filter((c) => c !== campaign) : [...prev, campaign]
-    )
-  }
-
-  const toggleCallType = (type: string) => {
-    setSelectedCallTypes((prev) =>
-      prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]
-    )
-  }
-
-  const toggleStatus = (status: string) => {
-    setSelectedStatuses((prev) =>
-      prev.includes(status) ? prev.filter((s) => s !== status) : [...prev, status]
-    )
-  }
-
-  const toggleAgent = (agent: string) => {
-    setSelectedAgents((prev) =>
-      prev.includes(agent) ? prev.filter((a) => a !== agent) : [...prev, agent]
-    )
-  }
-
-  const toggleCampaign = (campaign: string) => {
-    setSelectedCampaigns((prev) =>
-      prev.includes(campaign) ? prev.filter((c) => c !== campaign) : [...prev, campaign]
-    )
   }
 
   const clearAllFilters = () => {
@@ -382,7 +351,7 @@ export default function Page() {
                   </PopoverTrigger>
                   <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-2" align="start">
                     <div className="space-y-1">
-                      {["Inbound", "Outbound"].map((type) => (
+                      {CALL_TYPES.map((type) => (
                         <div key={type} className="flex items-center space-x-2 px-2 py-1.5 hover:bg-accent rounded-sm cursor-pointer">
                           <Checkbox
                             id={`report-type-${type}`}
@@ -418,7 +387,7 @@ export default function Page() {
                   </PopoverTrigger>
                   <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-2" align="start">
                     <div className="space-y-1">
-                      {["Completed", "Failed", "Missed", "In Progress"].map((status) => (
+                      {CALL_STATUSES.map((status) => (
                         <div key={status} className="flex items-center space-x-2 px-2 py-1.5 hover:bg-accent rounded-sm cursor-pointer">
                           <Checkbox
                             id={`report-status-${status}`}
@@ -454,7 +423,7 @@ export default function Page() {
                   </PopoverTrigger>
                   <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-2" align="start">
                     <div className="space-y-1">
-                      {["Agent 1", "Agent 2", "Agent 3"].map((agent) => (
+                      {AGENT_OPTIONS.map((agent) => (
                         <div key={agent} className="flex items-center space-x-2 px-2 py-1.5 hover:bg-accent rounded-sm cursor-pointer">
                           <Checkbox
                             id={`report-agent-${agent}`}
@@ -490,7 +459,7 @@ export default function Page() {
                   </PopoverTrigger>
                   <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-2" align="start">
                     <div className="space-y-1">
-                      {["Summer Sale", "Product Launch", "Customer Support"].map((campaign) => (
+                      {CAMPAIGN_OPTIONS.map((campaign) => (
                         <div key={campaign} className="flex items-center space-x-2 px-2 py-1.5 hover:bg-accent rounded-sm cursor-pointer">
                           <Checkbox
                             id={`report-campaign-${campaign}`}
