@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import { useRouter } from "next/navigation"
 import { PageHeader } from "@/components/page-header"
 import {
@@ -37,6 +37,8 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { Progress } from "@/components/ui/progress"
+import { getStatusConfig } from "@/lib/helpers"
+import { DOCUMENT_LIMIT } from "@/lib/constants"
 
 // Mock data for knowledge bases
 type KnowledgeBase = {
@@ -49,9 +51,6 @@ type KnowledgeBase = {
   createdAt: string
   status: "processing" | "ready" | "active" | "empty"
 }
-
-// Document limits
-const DOCUMENT_LIMIT = 100
 
 const mockKnowledgeBases: KnowledgeBase[] = [
   {
@@ -95,35 +94,6 @@ const mockKnowledgeBases: KnowledgeBase[] = [
     status: "empty",
   },
 ]
-
-const getStatusConfig = (status: KnowledgeBase["status"]) => {
-  switch (status) {
-    case "processing":
-      return {
-        label: "Processing",
-        color: "border-yellow-500 text-yellow-500",
-        dotColor: "bg-yellow-500",
-      }
-    case "ready":
-      return {
-        label: "Ready",
-        color: "border-green-500 text-green-500",
-        dotColor: "bg-green-500",
-      }
-    case "active":
-      return {
-        label: "Active",
-        color: "border-green-500 text-green-500",
-        dotColor: "bg-green-500",
-      }
-    case "empty":
-      return {
-        label: "Empty",
-        color: "border-red-500 text-red-500",
-        dotColor: "bg-red-500",
-      }
-  }
-}
 
 export default function Page() {
   const router = useRouter()
@@ -204,6 +174,19 @@ export default function Page() {
     setIsDeleteDialogOpen(false)
     setSelectedKbId(null)
   }
+
+  // Memoize document limit calculation for performance
+  const documentStats = useMemo(() => {
+    const activeKbs = mockKnowledgeBases.filter(kb => kb.status === "active")
+    if (activeKbs.length === 0) return null
+
+    const totalDocuments = activeKbs.reduce((sum, kb) =>
+      sum + kb.fileCount + kb.websiteCount + kb.textCount, 0
+    )
+    const documentPercentage = (totalDocuments / DOCUMENT_LIMIT) * 100
+
+    return { totalDocuments, documentPercentage }
+  }, [])
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4">
@@ -571,38 +554,28 @@ export default function Page() {
         ) : (
           <div className="p-6">
             {/* Document Limit Progress - Only show for active knowledge bases */}
-            {(() => {
-              const activeKbs = mockKnowledgeBases.filter(kb => kb.status === "active")
-              if (activeKbs.length === 0) return null
-              
-              const totalDocuments = activeKbs.reduce((sum, kb) => 
-                sum + kb.fileCount + kb.websiteCount + kb.textCount, 0
-              )
-              const documentPercentage = (totalDocuments / DOCUMENT_LIMIT) * 100
-              
-              return (
-                <div className="mb-6">
-                  <div className="flex items-center justify-between mb-2">
-                    <h3 className="text-sm font-medium">Document Limit</h3>
-                    <span className="text-sm text-muted-foreground">
-                      {totalDocuments} / {DOCUMENT_LIMIT} documents
-                    </span>
-                  </div>
-                  <div className="w-full bg-secondary rounded-full h-2 overflow-hidden">
-                    <div 
-                      className={`h-full transition-all ${
-                        documentPercentage >= 90 
-                          ? 'bg-red-500' 
-                          : documentPercentage >= 70 
-                            ? 'bg-yellow-500' 
-                            : 'bg-primary'
-                      }`}
-                      style={{ width: `${documentPercentage}%` }}
-                    />
-                  </div>
+            {documentStats && (
+              <div className="mb-6">
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="text-sm font-medium">Document Limit</h3>
+                  <span className="text-sm text-muted-foreground">
+                    {documentStats.totalDocuments} / {DOCUMENT_LIMIT} documents
+                  </span>
                 </div>
-              )
-            })()}
+                <div className="w-full bg-secondary rounded-full h-2 overflow-hidden">
+                  <div
+                    className={`h-full transition-all ${
+                      documentStats.documentPercentage >= 90
+                        ? 'bg-red-500'
+                        : documentStats.documentPercentage >= 70
+                          ? 'bg-yellow-500'
+                          : 'bg-primary'
+                    }`}
+                    style={{ width: `${documentStats.documentPercentage}%` }}
+                  />
+                </div>
+              </div>
+            )}
 
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {mockKnowledgeBases.map((kb) => (

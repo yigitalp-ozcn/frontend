@@ -68,6 +68,23 @@ export const schema = z.object({
   campaign: z.string(),
 })
 
+// Extract status icon logic for reusability
+const getStatusIcon = (status: string) => {
+  switch (status) {
+    case "Completed":
+      return <IconCircleCheckFilled className="fill-green-500 dark:fill-green-400 size-4" />
+    case "Failed":
+      return <IconCircleXFilled className="fill-red-500 dark:fill-red-400 size-4" />
+    case "Missed":
+      return <IconAlertCircleFilled className="fill-yellow-500 dark:fill-yellow-400 size-4" />
+    case "In Progress":
+      return <IconClockPause className="size-4" />
+    default:
+      return null
+  }
+}
+
+// Move columns outside component to prevent recreation on every render
 const columns: ColumnDef<z.infer<typeof schema>>[] = [
   {
     accessorKey: "callType",
@@ -120,30 +137,14 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
   {
     accessorKey: "status",
     header: () => <div className="text-center">Status</div>,
-    cell: ({ row }) => {
-      const status = row.original.status
-      
-      let icon = null
-      
-      if (status === "Completed") {
-        icon = <IconCircleCheckFilled className="fill-green-500 dark:fill-green-400 size-4" />
-      } else if (status === "Failed") {
-        icon = <IconCircleXFilled className="fill-red-500 dark:fill-red-400 size-4" />
-      } else if (status === "Missed") {
-        icon = <IconAlertCircleFilled className="fill-yellow-500 dark:fill-yellow-400 size-4" />
-      } else if (status === "In Progress") {
-        icon = <IconClockPause className="size-4" />
-      }
-      
-      return (
-        <div className="flex justify-center">
-          <Badge variant="outline" className="text-muted-foreground px-1.5 gap-1">
-            {icon}
-            {status}
-          </Badge>
-        </div>
-      )
-    },
+    cell: ({ row }) => (
+      <div className="flex justify-center">
+        <Badge variant="outline" className="text-muted-foreground px-1.5 gap-1">
+          {getStatusIcon(row.original.status)}
+          {row.original.status}
+        </Badge>
+      </div>
+    ),
   },
   {
     id: "details",
