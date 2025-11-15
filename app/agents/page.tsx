@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import { PageHeader } from "@/components/page-header"
 import {
@@ -11,7 +11,7 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty"
-import { Bot, ArrowUpRightIcon, Plus, Trash2, Settings, PhoneCall, FileText, Wrench, GitBranch } from "lucide-react"
+import { Bot, ArrowUpRightIcon, Plus, Trash2, Settings, PhoneCall, FileText, Wrench, GitBranch, Info } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -178,7 +178,7 @@ export default function Page() {
   const [selectedCountryCode, setSelectedCountryCode] = useState("+1")
   const [phoneNumber, setPhoneNumber] = useState("")
 
-  const handleCreate = () => {
+  const handleCreate = useCallback(() => {
     // Here you would implement the actual create logic
     console.log("Creating agent:", {
       name: agentName,
@@ -188,27 +188,27 @@ export default function Page() {
     setIsCreateDialogOpen(false)
     setAgentName("")
     setAgentDescription("")
-  }
+  }, [agentName, agentDescription])
 
-  const handleDeleteClick = (id: string) => {
+  const handleDeleteClick = useCallback((id: string) => {
     setSelectedAgentId(id)
     setIsDeleteDialogOpen(true)
-  }
+  }, [])
 
-  const handleDeleteConfirm = () => {
+  const handleDeleteConfirm = useCallback(() => {
     // Here you would implement the actual delete logic
     console.log("Deleting agent:", selectedAgentId)
     // Close dialog after deletion
     setIsDeleteDialogOpen(false)
     setSelectedAgentId(null)
-  }
+  }, [selectedAgentId])
 
-  const handleTestCallClick = (id: string) => {
+  const handleTestCallClick = useCallback((id: string) => {
     setSelectedAgentId(id)
     setIsTestCallDialogOpen(true)
-  }
+  }, [])
 
-  const handleTestCallConfirm = () => {
+  const handleTestCallConfirm = useCallback(() => {
     // Here you would implement the actual test call logic
     console.log("Test call:", {
       agentId: selectedAgentId,
@@ -219,7 +219,7 @@ export default function Page() {
     setSelectedAgentId(null)
     setPhoneNumber("")
     setSelectedCountryCode("+1")
-  }
+  }, [selectedAgentId, selectedCountryCode, phoneNumber])
 
   const selectedAgent = useMemo(() =>
     mockAgents.find((agent) => agent.id === selectedAgentId),
@@ -292,19 +292,7 @@ export default function Page() {
             <div className="rounded-lg border border-muted bg-muted/30 p-4 space-y-2">
               <div className="flex items-start gap-2">
                 <div className="rounded-full bg-muted p-1 mt-0.5">
-                  <svg
-                    className="h-4 w-4 text-muted-foreground"
-                    fill="none"
-                    strokeWidth="2"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
+                  <Info className="h-4 w-4 text-muted-foreground" />
                 </div>
                 <div className="flex-1 space-y-1 text-sm">
                   <p className="font-medium text-foreground">What&apos;s Next?</p>
@@ -487,21 +475,24 @@ export default function Page() {
         ) : (
           <div className="p-6">
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {mockAgents.map((agent) => (
-                <Card key={agent.id} className="flex flex-col">
-                  {/* Header with title and status badge */}
-                  <CardHeader>
-                    <div className="flex items-center justify-between w-full mb-[-10px]">
-                      <div className="space-y-1 flex-1">
-                        <CardTitle className="text-lg">{agent.name}</CardTitle>
-                        <p className="text-sm text-muted-foreground">{agent.type}</p>
+              {mockAgents.map((agent) => {
+                const statusConfig = getStatusConfig(agent.status)
+                const callerTypeConfig = getCallerTypeConfig(agent.callerType)
+                return (
+                  <Card key={agent.id} className="flex flex-col">
+                    {/* Header with title and status badge */}
+                    <CardHeader>
+                      <div className="flex items-center justify-between w-full mb-[-10px]">
+                        <div className="space-y-1 flex-1">
+                          <CardTitle className="text-lg">{agent.name}</CardTitle>
+                          <p className="text-sm text-muted-foreground">{agent.type}</p>
+                        </div>
+                        <Badge variant="outline" className={`gap-1.5 shrink-0 ${statusConfig.color}`}>
+                          <span className={`h-2 w-2 rounded-full ${statusConfig.dotColor}`}></span>
+                          {statusConfig.label}
+                        </Badge>
                       </div>
-                      <Badge variant="outline" className={`gap-1.5 shrink-0 ${getStatusConfig(agent.status).color}`}>
-                        <span className={`h-2 w-2 rounded-full ${getStatusConfig(agent.status).dotColor}`}></span>
-                        {getStatusConfig(agent.status).label}
-                      </Badge>
-                    </div>
-                  </CardHeader>
+                    </CardHeader>
 
                   <Separator />
 
@@ -542,8 +533,8 @@ export default function Page() {
                       </div>
                       <div className="flex items-center justify-between text-sm">
                         <span className="text-muted-foreground">Caller Type</span>
-                        <Badge variant="outline" className={getCallerTypeConfig(agent.callerType).color}>
-                          {getCallerTypeConfig(agent.callerType).label}
+                        <Badge variant="outline" className={callerTypeConfig.color}>
+                          {callerTypeConfig.label}
                         </Badge>
                       </div>
                       <div className="flex items-center justify-between text-sm">
@@ -619,9 +610,10 @@ export default function Page() {
                     </Button>
                   </CardFooter>
                 </Card>
-              ))}
+                )
+              })}
             </div>
-        </div>
+          </div>
         )}
       </div>
     </div>

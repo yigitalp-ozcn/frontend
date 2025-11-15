@@ -3,25 +3,28 @@ export type StatusType = "active" | "inactive" | "processing" | "ready" | "empty
 export type CallerType = "inbound" | "outbound"
 export type CampaignStatusType = "draft" | "planned" | "continuing" | "completed" | "stopped"
 
+// Utility function to capitalize first letter
+const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1)
+
 export const getStatusConfig = (status: StatusType) => {
   switch (status) {
     case "active":
     case "ready":
       return {
-        label: status.charAt(0).toUpperCase() + status.slice(1),
+        label: capitalize(status),
         color: "border-green-500 text-green-500",
         dotColor: "bg-green-500",
       }
     case "inactive":
     case "empty":
       return {
-        label: status.charAt(0).toUpperCase() + status.slice(1),
+        label: capitalize(status),
         color: "border-red-500 text-red-500",
         dotColor: "bg-red-500",
       }
     case "processing":
       return {
-        label: "Processing",
+        label: capitalize(status),
         color: "border-yellow-500 text-yellow-500",
         dotColor: "bg-yellow-500",
       }
@@ -32,12 +35,12 @@ export const getCallerTypeConfig = (callerType: CallerType) => {
   switch (callerType) {
     case "inbound":
       return {
-        label: "Inbound",
+        label: capitalize(callerType),
         color: "border-blue-500 text-blue-500",
       }
     case "outbound":
       return {
-        label: "Outbound",
+        label: capitalize(callerType),
         color: "border-purple-500 text-purple-500",
       }
   }
@@ -47,31 +50,31 @@ export const getCampaignStatusConfig = (status: CampaignStatusType) => {
   switch (status) {
     case "draft":
       return {
-        label: "Draft",
+        label: capitalize(status),
         color: "border-gray-500 text-gray-500",
         dotColor: "bg-gray-500",
       }
     case "planned":
       return {
-        label: "Planned",
+        label: capitalize(status),
         color: "border-blue-500 text-blue-500",
         dotColor: "bg-blue-500",
       }
     case "continuing":
       return {
-        label: "Continuing",
+        label: capitalize(status),
         color: "border-yellow-500 text-yellow-500",
         dotColor: "bg-yellow-500",
       }
     case "completed":
       return {
-        label: "Completed",
+        label: capitalize(status),
         color: "border-green-500 text-green-500",
         dotColor: "bg-green-500",
       }
     case "stopped":
       return {
-        label: "Stopped",
+        label: capitalize(status),
         color: "border-red-500 text-red-500",
         dotColor: "bg-red-500",
       }

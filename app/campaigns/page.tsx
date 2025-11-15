@@ -128,27 +128,29 @@ export default function Page() {
         ) : (
           <div className="p-6">
             <div className="space-y-4">
-              {mockCampaigns.map((campaign) => (
-                <Card 
-                  key={campaign.id} 
-                  className="w-full cursor-pointer hover:bg-muted/50 transition-colors"
-                  onClick={() => router.push(`/campaigns/${campaign.id}`)}
-                >
-                  {/* Header with batch name and status */}
-                  <CardHeader>
-                    <div className="flex items-start justify-between w-full mb-[-10px]">
-                      <div className="flex-1">
-                        <CardTitle className="text-xl">{campaign.batchName}</CardTitle>
+              {mockCampaigns.map((campaign) => {
+                const statusConfig = getCampaignStatusConfig(campaign.status)
+                return (
+                  <Card
+                    key={campaign.id}
+                    className="w-full cursor-pointer hover:bg-muted/50 transition-colors"
+                    onClick={() => router.push(`/campaigns/${campaign.id}`)}
+                  >
+                    {/* Header with batch name and status */}
+                    <CardHeader>
+                      <div className="flex items-start justify-between w-full mb-[-10px]">
+                        <div className="flex-1">
+                          <CardTitle className="text-xl">{campaign.batchName}</CardTitle>
+                        </div>
+                        <Badge
+                          variant="outline"
+                          className={`gap-1.5 shrink-0 ${statusConfig.color}`}
+                        >
+                          <span className={`h-2 w-2 rounded-full ${statusConfig.dotColor}`}></span>
+                          {statusConfig.label}
+                        </Badge>
                       </div>
-                      <Badge 
-                        variant="outline" 
-                        className={`gap-1.5 shrink-0 ${getCampaignStatusConfig(campaign.status).color}`}
-                      >
-                        <span className={`h-2 w-2 rounded-full ${getCampaignStatusConfig(campaign.status).dotColor}`}></span>
-                        {getCampaignStatusConfig(campaign.status).label}
-                      </Badge>
-                    </div>
-                  </CardHeader>
+                    </CardHeader>
 
                   <Separator />
 
@@ -169,7 +171,8 @@ export default function Page() {
                     </div>
                   </CardContent>
                 </Card>
-              ))}
+                )
+              })}
             </div>
           </div>
         )}

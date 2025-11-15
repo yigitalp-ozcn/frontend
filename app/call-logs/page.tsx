@@ -537,7 +537,7 @@ export default function Page() {
                   </PopoverTrigger>
                     <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-2" align="start">
                       <div className="space-y-1">
-                        {["Inbound", "Outbound"].map((type) => (
+                        {CALL_TYPES.map((type) => (
                           <div key={type} className="flex items-center space-x-2 px-2 py-1.5 hover:bg-accent rounded-sm cursor-pointer">
                             <Checkbox
                               id={`dialog-type-${type}`}
@@ -573,7 +573,7 @@ export default function Page() {
                   </PopoverTrigger>
                     <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-2" align="start">
                       <div className="space-y-1">
-                        {["Completed", "Failed", "Missed", "In Progress"].map((status) => (
+                        {CALL_STATUSES.map((status) => (
                           <div key={status} className="flex items-center space-x-2 px-2 py-1.5 hover:bg-accent rounded-sm cursor-pointer">
                             <Checkbox
                               id={`dialog-status-${status}`}
@@ -609,7 +609,7 @@ export default function Page() {
                   </PopoverTrigger>
                     <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-2" align="start">
                       <div className="space-y-1">
-                        {["Agent 1", "Agent 2", "Agent 3"].map((agent) => (
+                        {AGENT_OPTIONS.map((agent) => (
                           <div key={agent} className="flex items-center space-x-2 px-2 py-1.5 hover:bg-accent rounded-sm cursor-pointer">
                             <Checkbox
                               id={`dialog-agent-${agent}`}
@@ -645,7 +645,7 @@ export default function Page() {
                   </PopoverTrigger>
                     <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-2" align="start">
                       <div className="space-y-1">
-                        {["Summer Sale", "Product Launch", "Customer Support"].map((campaign) => (
+                        {CAMPAIGN_OPTIONS.map((campaign) => (
                           <div key={campaign} className="flex items-center space-x-2 px-2 py-1.5 hover:bg-accent rounded-sm cursor-pointer">
                             <Checkbox
                               id={`dialog-campaign-${campaign}`}
