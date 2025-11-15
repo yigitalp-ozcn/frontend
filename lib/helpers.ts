@@ -1,6 +1,7 @@
 // Status configuration helpers
 export type StatusType = "active" | "inactive" | "processing" | "ready" | "empty"
 export type CallerType = "inbound" | "outbound"
+export type CampaignStatusType = "draft" | "planned" | "continuing" | "completed" | "stopped"
 
 export const getStatusConfig = (status: StatusType) => {
   switch (status) {
@@ -38,6 +39,41 @@ export const getCallerTypeConfig = (callerType: CallerType) => {
       return {
         label: "Outbound",
         color: "border-purple-500 text-purple-500",
+      }
+  }
+}
+
+export const getCampaignStatusConfig = (status: CampaignStatusType) => {
+  switch (status) {
+    case "draft":
+      return {
+        label: "Draft",
+        color: "border-gray-500 text-gray-500",
+        dotColor: "bg-gray-500",
+      }
+    case "planned":
+      return {
+        label: "Planned",
+        color: "border-blue-500 text-blue-500",
+        dotColor: "bg-blue-500",
+      }
+    case "continuing":
+      return {
+        label: "Continuing",
+        color: "border-yellow-500 text-yellow-500",
+        dotColor: "bg-yellow-500",
+      }
+    case "completed":
+      return {
+        label: "Completed",
+        color: "border-green-500 text-green-500",
+        dotColor: "bg-green-500",
+      }
+    case "stopped":
+      return {
+        label: "Stopped",
+        color: "border-red-500 text-red-500",
+        dotColor: "bg-red-500",
       }
   }
 }
