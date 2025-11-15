@@ -10,13 +10,13 @@ export const COUNTRY_CODES = [
   { code: "+91", country: "IN", flag: "🇮🇳" },
   { code: "+86", country: "CN", flag: "🇨🇳" },
   { code: "+81", country: "JP", flag: "🇯🇵" },
-] as const
+]
 
 // Filter options
-export const CALL_TYPES = ["Inbound", "Outbound"] as const
-export const CALL_STATUSES = ["Completed", "Failed", "Missed", "In Progress"] as const
-export const AGENT_OPTIONS = ["Agent 1", "Agent 2", "Agent 3"] as const
-export const CAMPAIGN_OPTIONS = ["Summer Sale", "Product Launch", "Customer Support"] as const
+export const CALL_TYPES = ["Inbound", "Outbound"]
+export const CALL_STATUSES = ["Completed", "Failed", "Missed", "In Progress"]
+export const AGENT_OPTIONS = ["Agent 1", "Agent 2", "Agent 3"]
+export const CAMPAIGN_OPTIONS = ["Summer Sale", "Product Launch", "Customer Support"]
 
 // Document limit
 export const DOCUMENT_LIMIT = 100

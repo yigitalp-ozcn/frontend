@@ -16,32 +16,32 @@ const statsCards = [
   {
     label: "Active Agents",
     value: "10",
-    trend: { value: "+25%", direction: "up" as const },
+    trend: { value: "+25%", direction: "up" },
     description: "Growing agent network",
     subtitle: "All agents operational and ready",
   },
   {
     label: "Pending Calls",
     value: "134",
-    trend: { value: "-15%", direction: "down" as const },
+    trend: { value: "-15%", direction: "down" },
     description: "Queue improving",
     subtitle: "Processing efficiency increased",
   },
   {
     label: "Answer Rate",
     value: "64%",
-    trend: { value: "+12.5%", direction: "up" as const },
+    trend: { value: "+12.5%", direction: "up" },
     description: "Trending up this month",
     subtitle: "Higher engagement from contacts",
   },
   {
     label: "Success Rate",
     value: "54%",
-    trend: { value: "+4.5%", direction: "up" as const },
+    trend: { value: "+4.5%", direction: "up" },
     description: "Steady performance increase",
     subtitle: "Conversion goals on track",
   },
-] as const
+]
 
 export function SectionCards() {
   return (

@@ -80,4 +80,4 @@ export const sidebarData = {
       icon: CreditCard,
     },
   ],
-} as const
+}

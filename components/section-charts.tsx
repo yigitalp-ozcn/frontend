@@ -18,7 +18,7 @@ const chartCards = [
   { title: "Peak Hours", Component: ChartBarHorizontal },
   { title: "Sentiment Analysis", Component: ChartRadarDefault },
   { title: "Top Agents", Component: ChartPieSimple },
-] as const
+]
 
 export function SectionCharts() {
   return (
