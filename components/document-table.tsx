@@ -91,6 +91,136 @@ interface DocumentTableProps {
   onBulkDelete?: (ids: string[]) => void
 }
 
+// Separate component for actions to avoid state recreation on every render
+function DocumentActionsCell({
+  document,
+  onEdit,
+  onDownload,
+  onDelete,
+}: {
+  document: Document
+  onEdit?: (id: string, name: string, description: string) => void
+  onDownload?: (id: string) => void
+  onDelete?: (id: string) => void
+}) {
+  const [showDeleteDialog, setShowDeleteDialog] = React.useState(false)
+  const [showEditDialog, setShowEditDialog] = React.useState(false)
+  const [editName, setEditName] = React.useState(document.name)
+  const [editDescription, setEditDescription] = React.useState(document.description || "")
+
+  return (
+    <>
+      <div className="flex items-center justify-center gap-1 w-[160px]">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8"
+          onClick={() => {
+            setEditName(document.name)
+            setEditDescription(document.description || "")
+            setShowEditDialog(true)
+          }}
+        >
+          <Pencil className="h-4 w-4" />
+          <span className="sr-only">Edit</span>
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8"
+          onClick={() => onDownload?.(document.id)}
+        >
+          <Download className="h-4 w-4" />
+          <span className="sr-only">Download</span>
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10 dark:hover:bg-destructive/20"
+          onClick={() => setShowDeleteDialog(true)}
+        >
+          <Trash2 className="h-4 w-4" />
+          <span className="sr-only">Delete</span>
+        </Button>
+      </div>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete the document
+              <span className="font-semibold"> "{document.name}"</span>.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction asChild>
+              <Button
+                variant="destructive-outline"
+                onClick={() => {
+                  onDelete?.(document.id)
+                  setShowDeleteDialog(false)
+                }}
+              >
+                Delete
+              </Button>
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Edit Dialog */}
+      <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit Document</DialogTitle>
+            <DialogDescription>
+              Update the name and description of your document.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="edit-name">Name</Label>
+              <Input
+                id="edit-name"
+                value={editName}
+                onChange={(e) => setEditName(e.target.value)}
+                placeholder="Document name"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-description">Description</Label>
+              <Textarea
+                id="edit-description"
+                value={editDescription}
+                onChange={(e) => setEditDescription(e.target.value)}
+                placeholder="Document description (optional)"
+                className="resize-none"
+                rows={3}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowEditDialog(false)}>
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                onEdit?.(document.id, editName, editDescription)
+                setShowEditDialog(false)
+              }}
+            >
+              Save Changes
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
+  )
+}
+
 const createColumns = (
   onEdit?: (id: string, name: string, description: string) => void,
   onDownload?: (id: string) => void,
@@ -202,124 +332,14 @@ const createColumns = (
   {
     id: "actions",
     header: () => <div className="text-center">Actions</div>,
-    cell: ({ row, table }) => {
-      const [showDeleteDialog, setShowDeleteDialog] = React.useState(false)
-      const [showEditDialog, setShowEditDialog] = React.useState(false)
-      const [editName, setEditName] = React.useState(row.original.name)
-      const [editDescription, setEditDescription] = React.useState(row.original.description || "")
-
-      return (
-        <>
-          <div className="flex items-center justify-center gap-1 w-[160px]">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8"
-              onClick={() => {
-                setEditName(row.original.name)
-                setEditDescription(row.original.description || "")
-                setShowEditDialog(true)
-              }}
-            >
-              <Pencil className="h-4 w-4" />
-              <span className="sr-only">Edit</span>
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8"
-              onClick={() => onDownload?.(row.original.id)}
-            >
-              <Download className="h-4 w-4" />
-              <span className="sr-only">Download</span>
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10 dark:hover:bg-destructive/20"
-              onClick={() => setShowDeleteDialog(true)}
-            >
-              <Trash2 className="h-4 w-4" />
-              <span className="sr-only">Delete</span>
-            </Button>
-          </div>
-
-          {/* Delete Confirmation Dialog */}
-          <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  This action cannot be undone. This will permanently delete the document
-                  <span className="font-semibold"> "{row.original.name}"</span>.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction asChild>
-                  <Button 
-                    variant="destructive-outline"
-                    onClick={() => {
-                      onDelete?.(row.original.id)
-                      setShowDeleteDialog(false)
-                    }}
-                  >
-                    Delete
-                  </Button>
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-
-          {/* Edit Dialog */}
-          <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Edit Document</DialogTitle>
-                <DialogDescription>
-                  Update the name and description of your document.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="space-y-4 py-4">
-                <div className="space-y-2">
-                  <Label htmlFor="edit-name">Name</Label>
-                  <Input
-                    id="edit-name"
-                    value={editName}
-                    onChange={(e) => setEditName(e.target.value)}
-                    placeholder="Document name"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="edit-description">Description</Label>
-                  <Textarea
-                    id="edit-description"
-                    value={editDescription}
-                    onChange={(e) => setEditDescription(e.target.value)}
-                    placeholder="Document description (optional)"
-                    className="resize-none"
-                    rows={3}
-                  />
-                </div>
-              </div>
-              <DialogFooter>
-                <Button variant="outline" onClick={() => setShowEditDialog(false)}>
-                  Cancel
-                </Button>
-                <Button
-                  onClick={() => {
-                    onEdit?.(row.original.id, editName, editDescription)
-                    setShowEditDialog(false)
-                  }}
-                >
-                  Save Changes
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-        </>
-      )
-    },
+    cell: ({ row }) => (
+      <DocumentActionsCell
+        document={row.original}
+        onEdit={onEdit}
+        onDownload={onDownload}
+        onDelete={onDelete}
+      />
+    ),
     size: 160,
   },
 ]
