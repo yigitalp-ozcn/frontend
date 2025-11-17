@@ -19,19 +19,8 @@ import "@xyflow/react/dist/style.css"
 import { PageHeader } from "@/components/page-header"
 import { Button } from "@/components/ui/button"
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip"
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "@/components/ui/drawer"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
 import { Switch } from "@/components/ui/switch"
 import {
   Save,
@@ -74,51 +63,20 @@ const nodeTypes = {
   note: NoteNode,
 }
 
-const initialNodes: Node[] = [
-  {
-    id: "1",
-    type: "conversation",
-    position: { x: 250, y: 50 },
-    data: { label: "Start Conversation", description: "Initial greeting" },
-  },
-  {
-    id: "2",
-    type: "conversation",
-    position: { x: 250, y: 200 },
-    data: { label: "Collect Information", description: "Ask for user details" },
-  },
-  {
-    id: "3",
-    type: "note",
-    position: { x: 500, y: 100 },
-    data: { label: "Important: Check user authentication first" },
-  },
-]
+const initialNodes: Node[] = []
 
-const initialEdges: Edge[] = [
-  {
-    id: "e1-2",
-    source: "1",
-    target: "2",
-    animated: true,
-  },
-]
+const initialEdges: Edge[] = []
 
 function FlowEditor({ params }: { params: { id: string } }) {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes)
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
   const { fitView, zoomIn, zoomOut, getNodes, getEdges } = useReactFlow()
-  
+
   // History for undo/redo
   const [history, setHistory] = useState<{ nodes: Node[]; edges: Edge[] }[]>([
     { nodes: initialNodes, edges: initialEdges },
   ])
   const [historyIndex, setHistoryIndex] = useState(0)
-
-  // Drawer state
-  const [drawerOpen, setDrawerOpen] = useState(false)
-  const [newNodeLabel, setNewNodeLabel] = useState("")
-  const [newNodeDescription, setNewNodeDescription] = useState("")
 
   // Header state
   const [isActive, setIsActive] = useState(true)
@@ -182,46 +140,9 @@ function FlowEditor({ params }: { params: { id: string } }) {
     setTimeout(() => fitView({ padding: 0.2, duration: 800 }), 100)
   }, [getNodes, setNodes, edges, fitView, saveToHistory])
 
-  const addConversationNode = useCallback(() => {
-    const newNode: Node = {
-      id: `node-${Date.now()}`,
-      type: "conversation",
-      position: { x: Math.random() * 400, y: Math.random() * 400 },
-      data: { label: newNodeLabel || "New Step", description: newNodeDescription || "Add description here" },
-    }
-    const newNodes = [...nodes, newNode]
-    setNodes(newNodes)
-    saveToHistory(newNodes, edges)
-    setDrawerOpen(false)
-    setNewNodeLabel("")
-    setNewNodeDescription("")
-  }, [nodes, edges, setNodes, saveToHistory, newNodeLabel, newNodeDescription])
-
-  const addNoteNode = useCallback(() => {
-    const newNode: Node = {
-      id: `note-${Date.now()}`,
-      type: "note",
-      position: { x: Math.random() * 400 + 100, y: Math.random() * 400 + 100 },
-      data: { label: "Add your note here..." },
-    }
-    const newNodes = [...nodes, newNode]
-    setNodes(newNodes)
-    saveToHistory(newNodes, edges)
-  }, [nodes, edges, setNodes, saveToHistory])
-
   // Keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Ctrl/Cmd + N: Add new node (open drawer)
-      if ((e.ctrlKey || e.metaKey) && e.key === "n") {
-        e.preventDefault()
-        setDrawerOpen(true)
-      }
-      // Ctrl/Cmd + Shift + N: Add note
-      if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === "N") {
-        e.preventDefault()
-        addNoteNode()
-      }
       // Ctrl/Cmd + Z: Undo
       if ((e.ctrlKey || e.metaKey) && e.key === "z" && !e.shiftKey) {
         e.preventDefault()
@@ -256,7 +177,7 @@ function FlowEditor({ params }: { params: { id: string } }) {
 
     window.addEventListener("keydown", handleKeyDown)
     return () => window.removeEventListener("keydown", handleKeyDown)
-  }, [addNoteNode, handleUndo, handleRedo, handleZoomToFit, handleTidyUp, zoomIn, zoomOut])
+  }, [handleUndo, handleRedo, handleZoomToFit, handleTidyUp, zoomIn, zoomOut])
 
   const handleCopyId = useCallback(() => {
     navigator.clipboard.writeText(params.id)
@@ -279,7 +200,7 @@ function FlowEditor({ params }: { params: { id: string } }) {
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4">
-      <PageHeader 
+      <PageHeader
         title={
           <div className="flex items-center gap-2">
             {isEditingName ? (
@@ -371,7 +292,7 @@ function FlowEditor({ params }: { params: { id: string } }) {
           </Button>
         </div>
       </PageHeader>
-      
+
       <div className="flex-1 rounded-lg border bg-background shadow-sm overflow-hidden">
         <ReactFlow
           nodes={nodes}
@@ -388,78 +309,29 @@ function FlowEditor({ params }: { params: { id: string } }) {
 
           {/* Top Right Controls - Add Nodes */}
           <Panel position="top-right" className="flex flex-col gap-2">
-            <Drawer open={drawerOpen} onOpenChange={setDrawerOpen} direction="right">
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <DrawerTrigger asChild>
-                    <Button
-                      size="icon-lg"
-                      className="shadow-lg"
-                    >
-                      <Plus className="h-5 w-5" />
-                    </Button>
-                  </DrawerTrigger>
-                </TooltipTrigger>
-                <TooltipContent side="left">
-                  <div className="flex flex-col gap-1">
-                    <span>Add New Node</span>
-                    <kbd className="text-xs opacity-70">Ctrl+N</kbd>
-                  </div>
-                </TooltipContent>
-              </Tooltip>
-
-              <DrawerContent direction="right">
-                <DrawerHeader>
-                  <DrawerTitle>Add New Conversation Node</DrawerTitle>
-                  <DrawerDescription>
-                    Create a new conversation step in your pathway
-                  </DrawerDescription>
-                </DrawerHeader>
-
-                <div className="p-4 space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="node-label">Label</Label>
-                    <Input
-                      id="node-label"
-                      placeholder="e.g., Collect User Info"
-                      value={newNodeLabel}
-                      onChange={(e) => setNewNodeLabel(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter" && newNodeLabel) {
-                          addConversationNode()
-                        }
-                      }}
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="node-description">Description</Label>
-                    <Textarea
-                      id="node-description"
-                      placeholder="Add a description for this step..."
-                      value={newNodeDescription}
-                      onChange={(e) => setNewNodeDescription(e.target.value)}
-                      rows={4}
-                    />
-                  </div>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  size="icon-lg"
+                  className="shadow-lg"
+                  onClick={() => {}}
+                >
+                  <Plus className="h-5 w-5" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="left">
+                <div className="flex flex-col gap-1">
+                  <span>Add New Node</span>
+                  <kbd className="text-xs opacity-70">Ctrl+N</kbd>
                 </div>
-
-                <DrawerFooter>
-                  <Button onClick={addConversationNode} disabled={!newNodeLabel}>
-                    Add Node
-                  </Button>
-                  <DrawerClose asChild>
-                    <Button variant="outline">Cancel</Button>
-                  </DrawerClose>
-                </DrawerFooter>
-              </DrawerContent>
-            </Drawer>
+              </TooltipContent>
+            </Tooltip>
 
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
                   size="icon-lg"
-                  onClick={addNoteNode}
+                  onClick={() => {}}
                   className="shadow-lg"
                 >
                   <StickyNote className="h-5 w-5" />

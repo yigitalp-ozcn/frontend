@@ -1,0 +1,634 @@
+{
+  "chartData": [
+    {
+      "date": "2024-08-15",
+      "calls": 104,
+      "cost": 125,
+      "duration": 135,
+      "avgCost": 1.2
+    },
+    {
+      "date": "2024-08-16",
+      "calls": 127,
+      "cost": 92,
+      "duration": 129,
+      "avgCost": 0.72
+    },
+    {
+      "date": "2024-08-17",
+      "calls": 83,
+      "cost": 139,
+      "duration": 145,
+      "avgCost": 1.67
+    },
+    {
+      "date": "2024-08-18",
+      "calls": 120,
+      "cost": 102,
+      "duration": 136,
+      "avgCost": 0.85
+    },
+    {
+      "date": "2024-08-19",
+      "calls": 117,
+      "cost": 87,
+      "duration": 137,
+      "avgCost": 0.74
+    },
+    {
+      "date": "2024-08-20",
+      "calls": 92,
+      "cost": 132,
+      "duration": 123,
+      "avgCost": 1.43
+    },
+    {
+      "date": "2024-08-21",
+      "calls": 98,
+      "cost": 131,
+      "duration": 129,
+      "avgCost": 1.34
+    },
+    {
+      "date": "2024-08-22",
+      "calls": 94,
+      "cost": 73,
+      "duration": 132,
+      "avgCost": 0.78
+    },
+    {
+      "date": "2024-08-23",
+      "calls": 86,
+      "cost": 97,
+      "duration": 154,
+      "avgCost": 1.13
+    },
+    {
+      "date": "2024-08-24",
+      "calls": 124,
+      "cost": 118,
+      "duration": 135,
+      "avgCost": 0.95
+    },
+    {
+      "date": "2024-08-25",
+      "calls": 86,
+      "cost": 118,
+      "duration": 136,
+      "avgCost": 1.37
+    },
+    {
+      "date": "2024-08-26",
+      "calls": 85,
+      "cost": 134,
+      "duration": 142,
+      "avgCost": 1.58
+    },
+    {
+      "date": "2024-08-27",
+      "calls": 124,
+      "cost": 68,
+      "duration": 140,
+      "avgCost": 0.55
+    },
+    {
+      "date": "2024-08-28",
+      "calls": 92,
+      "cost": 116,
+      "duration": 154,
+      "avgCost": 1.26
+    },
+    {
+      "date": "2024-08-29",
+      "calls": 106,
+      "cost": 94,
+      "duration": 143,
+      "avgCost": 0.89
+    },
+    {
+      "date": "2024-08-30",
+      "calls": 86,
+      "cost": 89,
+      "duration": 146,
+      "avgCost": 1.03
+    },
+    {
+      "date": "2024-08-31",
+      "calls": 101,
+      "cost": 115,
+      "duration": 147,
+      "avgCost": 1.14
+    },
+    {
+      "date": "2024-09-01",
+      "calls": 96,
+      "cost": 130,
+      "duration": 142,
+      "avgCost": 1.35
+    },
+    {
+      "date": "2024-09-02",
+      "calls": 117,
+      "cost": 112,
+      "duration": 150,
+      "avgCost": 0.96
+    },
+    {
+      "date": "2024-09-03",
+      "calls": 124,
+      "cost": 96,
+      "duration": 153,
+      "avgCost": 0.77
+    },
+    {
+      "date": "2024-09-04",
+      "calls": 113,
+      "cost": 138,
+      "duration": 138,
+      "avgCost": 1.22
+    },
+    {
+      "date": "2024-09-05",
+      "calls": 110,
+      "cost": 88,
+      "duration": 123,
+      "avgCost": 0.8
+    },
+    {
+      "date": "2024-09-06",
+      "calls": 92,
+      "cost": 65,
+      "duration": 123,
+      "avgCost": 0.71
+    },
+    {
+      "date": "2024-09-07",
+      "calls": 97,
+      "cost": 64,
+      "duration": 149,
+      "avgCost": 0.66
+    },
+    {
+      "date": "2024-09-08",
+      "calls": 86,
+      "cost": 74,
+      "duration": 136,
+      "avgCost": 0.86
+    },
+    {
+      "date": "2024-09-09",
+      "calls": 126,
+      "cost": 109,
+      "duration": 132,
+      "avgCost": 0.87
+    },
+    {
+      "date": "2024-09-10",
+      "calls": 87,
+      "cost": 104,
+      "duration": 145,
+      "avgCost": 1.2
+    },
+    {
+      "date": "2024-09-11",
+      "calls": 102,
+      "cost": 82,
+      "duration": 126,
+      "avgCost": 0.8
+    },
+    {
+      "date": "2024-09-12",
+      "calls": 111,
+      "cost": 77,
+      "duration": 135,
+      "avgCost": 0.69
+    },
+    {
+      "date": "2024-09-13",
+      "calls": 117,
+      "cost": 76,
+      "duration": 137,
+      "avgCost": 0.65
+    },
+    {
+      "date": "2024-09-14",
+      "calls": 91,
+      "cost": 68,
+      "duration": 138,
+      "avgCost": 0.75
+    },
+    {
+      "date": "2024-09-15",
+      "calls": 113,
+      "cost": 98,
+      "duration": 137,
+      "avgCost": 0.87
+    },
+    {
+      "date": "2024-09-16",
+      "calls": 108,
+      "cost": 111,
+      "duration": 127,
+      "avgCost": 1.03
+    },
+    {
+      "date": "2024-09-17",
+      "calls": 96,
+      "cost": 93,
+      "duration": 127,
+      "avgCost": 0.97
+    },
+    {
+      "date": "2024-09-18",
+      "calls": 103,
+      "cost": 111,
+      "duration": 131,
+      "avgCost": 1.08
+    },
+    {
+      "date": "2024-09-19",
+      "calls": 114,
+      "cost": 130,
+      "duration": 155,
+      "avgCost": 1.14
+    },
+    {
+      "date": "2024-09-20",
+      "calls": 109,
+      "cost": 67,
+      "duration": 154,
+      "avgCost": 0.61
+    },
+    {
+      "date": "2024-09-21",
+      "calls": 106,
+      "cost": 88,
+      "duration": 157,
+      "avgCost": 0.83
+    },
+    {
+      "date": "2024-09-22",
+      "calls": 99,
+      "cost": 131,
+      "duration": 136,
+      "avgCost": 1.32
+    },
+    {
+      "date": "2024-09-23",
+      "calls": 116,
+      "cost": 68,
+      "duration": 123,
+      "avgCost": 0.59
+    },
+    {
+      "date": "2024-09-24",
+      "calls": 94,
+      "cost": 89,
+      "duration": 135,
+      "avgCost": 0.95
+    },
+    {
+      "date": "2024-09-25",
+      "calls": 89,
+      "cost": 129,
+      "duration": 120,
+      "avgCost": 1.45
+    },
+    {
+      "date": "2024-09-26",
+      "calls": 100,
+      "cost": 106,
+      "duration": 121,
+      "avgCost": 1.06
+    },
+    {
+      "date": "2024-09-27",
+      "calls": 126,
+      "cost": 97,
+      "duration": 148,
+      "avgCost": 0.77
+    },
+    {
+      "date": "2024-09-28",
+      "calls": 102,
+      "cost": 66,
+      "duration": 134,
+      "avgCost": 0.65
+    },
+    {
+      "date": "2024-09-29",
+      "calls": 119,
+      "cost": 107,
+      "duration": 126,
+      "avgCost": 0.9
+    },
+    {
+      "date": "2024-09-30",
+      "calls": 90,
+      "cost": 104,
+      "duration": 139,
+      "avgCost": 1.16
+    },
+    {
+      "date": "2024-10-01",
+      "calls": 111,
+      "cost": 90,
+      "duration": 147,
+      "avgCost": 0.81
+    },
+    {
+      "date": "2024-10-02",
+      "calls": 124,
+      "cost": 111,
+      "duration": 141,
+      "avgCost": 0.9
+    },
+    {
+      "date": "2024-10-03",
+      "calls": 108,
+      "cost": 91,
+      "duration": 157,
+      "avgCost": 0.84
+    },
+    {
+      "date": "2024-10-04",
+      "calls": 116,
+      "cost": 90,
+      "duration": 155,
+      "avgCost": 0.78
+    },
+    {
+      "date": "2024-10-05",
+      "calls": 118,
+      "cost": 99,
+      "duration": 128,
+      "avgCost": 0.84
+    },
+    {
+      "date": "2024-10-06",
+      "calls": 94,
+      "cost": 101,
+      "duration": 130,
+      "avgCost": 1.07
+    },
+    {
+      "date": "2024-10-07",
+      "calls": 83,
+      "cost": 66,
+      "duration": 128,
+      "avgCost": 0.8
+    },
+    {
+      "date": "2024-10-08",
+      "calls": 110,
+      "cost": 133,
+      "duration": 120,
+      "avgCost": 1.21
+    },
+    {
+      "date": "2024-10-09",
+      "calls": 100,
+      "cost": 69,
+      "duration": 131,
+      "avgCost": 0.69
+    },
+    {
+      "date": "2024-10-10",
+      "calls": 128,
+      "cost": 139,
+      "duration": 138,
+      "avgCost": 1.09
+    },
+    {
+      "date": "2024-10-11",
+      "calls": 106,
+      "cost": 100,
+      "duration": 155,
+      "avgCost": 0.94
+    },
+    {
+      "date": "2024-10-12",
+      "calls": 117,
+      "cost": 78,
+      "duration": 147,
+      "avgCost": 0.67
+    },
+    {
+      "date": "2024-10-13",
+      "calls": 101,
+      "cost": 131,
+      "duration": 152,
+      "avgCost": 1.3
+    },
+    {
+      "date": "2024-10-14",
+      "calls": 122,
+      "cost": 61,
+      "duration": 140,
+      "avgCost": 0.5
+    },
+    {
+      "date": "2024-10-15",
+      "calls": 96,
+      "cost": 138,
+      "duration": 158,
+      "avgCost": 1.44
+    },
+    {
+      "date": "2024-10-16",
+      "calls": 118,
+      "cost": 80,
+      "duration": 154,
+      "avgCost": 0.68
+    },
+    {
+      "date": "2024-10-17",
+      "calls": 87,
+      "cost": 104,
+      "duration": 153,
+      "avgCost": 1.2
+    },
+    {
+      "date": "2024-10-18",
+      "calls": 101,
+      "cost": 78,
+      "duration": 127,
+      "avgCost": 0.77
+    },
+    {
+      "date": "2024-10-19",
+      "calls": 114,
+      "cost": 70,
+      "duration": 140,
+      "avgCost": 0.61
+    },
+    {
+      "date": "2024-10-20",
+      "calls": 128,
+      "cost": 118,
+      "duration": 145,
+      "avgCost": 0.92
+    },
+    {
+      "date": "2024-10-21",
+      "calls": 89,
+      "cost": 101,
+      "duration": 143,
+      "avgCost": 1.13
+    },
+    {
+      "date": "2024-10-22",
+      "calls": 102,
+      "cost": 71,
+      "duration": 146,
+      "avgCost": 0.7
+    },
+    {
+      "date": "2024-10-23",
+      "calls": 89,
+      "cost": 112,
+      "duration": 136,
+      "avgCost": 1.26
+    },
+    {
+      "date": "2024-10-24",
+      "calls": 106,
+      "cost": 120,
+      "duration": 130,
+      "avgCost": 1.13
+    },
+    {
+      "date": "2024-10-25",
+      "calls": 85,
+      "cost": 122,
+      "duration": 154,
+      "avgCost": 1.44
+    },
+    {
+      "date": "2024-10-26",
+      "calls": 126,
+      "cost": 126,
+      "duration": 145,
+      "avgCost": 1
+    },
+    {
+      "date": "2024-10-27",
+      "calls": 119,
+      "cost": 75,
+      "duration": 124,
+      "avgCost": 0.63
+    },
+    {
+      "date": "2024-10-28",
+      "calls": 81,
+      "cost": 87,
+      "duration": 137,
+      "avgCost": 1.07
+    },
+    {
+      "date": "2024-10-29",
+      "calls": 90,
+      "cost": 93,
+      "duration": 138,
+      "avgCost": 1.03
+    },
+    {
+      "date": "2024-10-30",
+      "calls": 110,
+      "cost": 78,
+      "duration": 149,
+      "avgCost": 0.71
+    },
+    {
+      "date": "2024-10-31",
+      "calls": 85,
+      "cost": 111,
+      "duration": 128,
+      "avgCost": 1.31
+    },
+    {
+      "date": "2024-11-01",
+      "calls": 84,
+      "cost": 107,
+      "duration": 128,
+      "avgCost": 1.27
+    },
+    {
+      "date": "2024-11-02",
+      "calls": 113,
+      "cost": 96,
+      "duration": 123,
+      "avgCost": 0.85
+    },
+    {
+      "date": "2024-11-03",
+      "calls": 110,
+      "cost": 95,
+      "duration": 152,
+      "avgCost": 0.86
+    },
+    {
+      "date": "2024-11-04",
+      "calls": 81,
+      "cost": 135,
+      "duration": 147,
+      "avgCost": 1.67
+    },
+    {
+      "date": "2024-11-05",
+      "calls": 112,
+      "cost": 77,
+      "duration": 125,
+      "avgCost": 0.69
+    },
+    {
+      "date": "2024-11-06",
+      "calls": 125,
+      "cost": 110,
+      "duration": 127,
+      "avgCost": 0.88
+    },
+    {
+      "date": "2024-11-07",
+      "calls": 104,
+      "cost": 65,
+      "duration": 132,
+      "avgCost": 0.63
+    },
+    {
+      "date": "2024-11-08",
+      "calls": 121,
+      "cost": 77,
+      "duration": 148,
+      "avgCost": 0.64
+    },
+    {
+      "date": "2024-11-09",
+      "calls": 95,
+      "cost": 68,
+      "duration": 137,
+      "avgCost": 0.72
+    },
+    {
+      "date": "2024-11-10",
+      "calls": 102,
+      "cost": 85,
+      "duration": 132,
+      "avgCost": 0.83
+    },
+    {
+      "date": "2024-11-11",
+      "calls": 88,
+      "cost": 101,
+      "duration": 148,
+      "avgCost": 1.15
+    },
+    {
+      "date": "2024-11-12",
+      "calls": 80,
+      "cost": 131,
+      "duration": 153,
+      "avgCost": 1.64
+    }
+  ]
+}

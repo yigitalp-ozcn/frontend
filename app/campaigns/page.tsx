@@ -127,7 +127,7 @@ export default function Page() {
           </div>
         ) : (
           <div className="p-6">
-            <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {mockCampaigns.map((campaign) => {
                 const statusConfig = getCampaignStatusConfig(campaign.status)
                 return (
@@ -137,10 +137,10 @@ export default function Page() {
                     onClick={() => router.push(`/campaigns/${campaign.id}`)}
                   >
                     {/* Header with batch name and status */}
-                    <CardHeader>
-                      <div className="flex items-start justify-between w-full mb-[-10px]">
-                        <div className="flex-1">
-                          <CardTitle className="text-xl">{campaign.batchName}</CardTitle>
+                    <CardHeader className="pb-3">
+                      <div className="flex items-start justify-between w-full gap-2">
+                        <div className="flex-1 min-w-0">
+                          <CardTitle className="text-base truncate">{campaign.batchName}</CardTitle>
                         </div>
                         <Badge
                           variant="outline"
@@ -155,7 +155,7 @@ export default function Page() {
                   <Separator />
 
                   {/* Content with progress */}
-                  <CardContent className="space-y-2">
+                  <CardContent className="space-y-2 pt-4">
                     <div className="flex items-center justify-between text-sm">
                       <span className="font-medium">Progress</span>
                       <span className="text-muted-foreground">

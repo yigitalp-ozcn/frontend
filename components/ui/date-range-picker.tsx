@@ -14,9 +14,14 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 
+interface DateRangePickerProps extends React.HTMLAttributes<HTMLDivElement> {
+  onDateChange?: (dateRange: DateRange | undefined) => void
+}
+
 export function DateRangePicker({
   className,
-}: React.HTMLAttributes<HTMLDivElement>) {
+  onDateChange,
+}: DateRangePickerProps) {
   const today = new Date()
   const [date, setDate] = React.useState<DateRange | undefined>({
     from: today,
@@ -138,6 +143,9 @@ export function DateRangePicker({
     setDate(tempDate)
     setSelectedPreset(detectPreset(tempDate))
     setOpen(false)
+    if (onDateChange) {
+      onDateChange(tempDate)
+    }
   }
 
   const handleCancel = () => {

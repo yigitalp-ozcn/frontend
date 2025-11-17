@@ -313,10 +313,10 @@ export default function AgentDetailPage() {
   })
 
   const [openIntegrations, setOpenIntegrations] = useState<Record<string, boolean>>({
-    'google-calendar': true,
-    'stripe': true,
-    'slack': true,
-    'gmail': true,
+    'google-calendar': false,
+    'stripe': false,
+    'slack': false,
+    'gmail': false,
   })
 
   const toggleTool = (toolId: string) => {
@@ -1836,16 +1836,6 @@ export default function AgentDetailPage() {
                           </div>
                         </div>
                         <div className="flex items-center gap-2 shrink-0">
-                          {enabledTools['detect-language'] && (
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="h-7 w-7"
-                              onClick={() => openToolDrawer('detect-language', 'detect_language')}
-                            >
-                              <Settings className="h-3.5 w-3.5" />
-                            </Button>
-                          )}
                           <Switch
                             checked={enabledTools['detect-language']}
                             onCheckedChange={() => toggleTool('detect-language')}
@@ -2413,7 +2403,7 @@ export default function AgentDetailPage() {
         </div>
 
         {/* Right Panel - Voice Chat */}
-        <div className="w-full lg:flex-[3] flex flex-col overflow-hidden relative min-w-0 rounded-lg h-full lg:sticky lg:top-4 lg:h-[calc(100vh-8rem)]">
+        <div className="w-full lg:flex-[3] flex flex-col overflow-hidden relative min-w-0 rounded-lg min-h-full lg:sticky lg:top-4 lg:h-[calc(100vh-8rem)]">
           {agentState === "disconnected" || agentState === null ? (
             /* Initial Voice Chat State */
             <Card className="flex h-full w-full flex-col">
