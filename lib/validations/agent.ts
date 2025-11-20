@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { AgentStatus, CallerType } from '@prisma/client'
+import { AgentStatus, CallerType } from '@/types/prisma-enums'
 
 // Agent AI configuration schema
 export const agentConfigurationSchema = z.object({

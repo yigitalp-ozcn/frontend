@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { VoiceGender, VoiceStatus } from '@prisma/client'
+import { VoiceGender, VoiceStatus } from '@/types/prisma-enums'
 
 // Create voice schema
 export const createVoiceSchema = z.object({

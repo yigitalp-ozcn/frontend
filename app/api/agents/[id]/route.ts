@@ -124,10 +124,34 @@ export async function PATCH(
       throw notFoundError('Agent')
     }
 
+    // Prepare update data with proper handling of nullable relation fields
+    const updateData: any = {}
+
+    // Handle regular fields
+    if (validated.name !== undefined) updateData.name = validated.name
+    if (validated.description !== undefined) updateData.description = validated.description
+    if (validated.type !== undefined) updateData.type = validated.type
+    if (validated.status !== undefined) updateData.status = validated.status
+    if (validated.callerType !== undefined) updateData.callerType = validated.callerType
+    if (validated.configuration !== undefined) updateData.configuration = validated.configuration
+
+    // Handle nullable relation fields with connect/disconnect
+    if (validated.phoneNumberId !== undefined) {
+      updateData.phoneNumber = validated.phoneNumberId
+        ? { connect: { id: validated.phoneNumberId } }
+        : { disconnect: true }
+    }
+
+    if (validated.voiceId !== undefined) {
+      updateData.voice = validated.voiceId
+        ? { connect: { id: validated.voiceId } }
+        : { disconnect: true }
+    }
+
     // Update agent
     const agent = await prisma.agent.update({
       where: { id },
-      data: validated,
+      data: updateData,
       include: {
         organization: true,
         phoneNumber: true,

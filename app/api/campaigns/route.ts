@@ -103,7 +103,7 @@ export async function POST(request: NextRequest) {
     const { recipients, ...campaignData } = validated
 
     // Create campaign with recipients in transaction
-    const campaign = await prisma.$transaction(async (tx) => {
+    const campaign = await prisma.$transaction(async (tx: any) => {
       // Create campaign
       const newCampaign = await tx.campaign.create({
         data: {

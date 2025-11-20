@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { DocumentType, KnowledgeBaseStatus } from '@prisma/client'
+import { DocumentType, KnowledgeBaseStatus } from '@/types/prisma-enums'
 
 // Create knowledge base schema
 export const createKnowledgeBaseSchema = z.object({

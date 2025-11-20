@@ -3,7 +3,7 @@ import prisma from '@/lib/prisma'
 import { handleApiError, notFoundError } from '@/lib/api-error'
 import { addDocumentSchema } from '@/lib/validations/knowledge-base'
 import { ApiSuccessResponse } from '@/types/api'
-import { DocumentType } from '@prisma/client'
+import { DocumentType } from '@/types/prisma-enums'
 
 type RouteContext = {
   params: Promise<{ id: string }>
@@ -31,7 +31,7 @@ export async function POST(
     }
 
     // Create document and update knowledge base counts
-    const document = await prisma.$transaction(async (tx) => {
+    const document = await prisma.$transaction(async (tx: any) => {
       // Create document
       const doc = await tx.knowledgeBaseDocument.create({
         data: {

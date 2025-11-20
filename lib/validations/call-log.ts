@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { CallType, CallStatus } from '@prisma/client'
+import { CallType, CallStatus } from '@/types/prisma-enums'
 
 // Create call log schema
 export const createCallLogSchema = z.object({

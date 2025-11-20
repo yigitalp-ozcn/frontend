@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { CampaignStatus } from '@prisma/client'
+import { CampaignStatus } from '@/types/prisma-enums'
 
 // Campaign recipient schema
 export const campaignRecipientSchema = z.object({

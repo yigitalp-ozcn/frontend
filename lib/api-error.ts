@@ -42,11 +42,12 @@ export function handleApiError(error: unknown): NextResponse<ApiErrorResponse> {
 
   // Zod validation errors
   if (error instanceof ZodError) {
+    const zodErrors = (error as any).errors || []
     return createErrorResponse(
       ApiErrorCode.VALIDATION_ERROR,
       'Validation failed',
       400,
-      error.errors.map((err) => ({
+      zodErrors.map((err: any) => ({
         path: err.path.join('.'),
         message: err.message,
       }))
@@ -63,16 +64,17 @@ export function handleApiError(error: unknown): NextResponse<ApiErrorResponse> {
     )
   }
 
-  // Prisma errors
-  if (error instanceof Prisma.PrismaClientKnownRequestError) {
-    switch (error.code) {
+  // Prisma errors (using duck typing since Prisma client isn't fully generated)
+  if (error && typeof error === 'object' && 'code' in error && typeof (error as any).code === 'string' && (error as any).code.startsWith('P')) {
+    const prismaError = error as any
+    switch (prismaError.code) {
       case 'P2002':
         // Unique constraint violation
         return createErrorResponse(
           ApiErrorCode.CONFLICT,
-          `A record with this ${(error.meta?.target as string[])?.[0]} already exists`,
+          `A record with this ${prismaError.meta?.target?.[0] || 'field'} already exists`,
           409,
-          { field: error.meta?.target }
+          { field: prismaError.meta?.target }
         )
 
       case 'P2025':
@@ -89,7 +91,7 @@ export function handleApiError(error: unknown): NextResponse<ApiErrorResponse> {
           ApiErrorCode.BAD_REQUEST,
           'Invalid reference to related record',
           400,
-          { field: error.meta?.field_name }
+          { field: prismaError.meta?.field_name }
         )
 
       default:

@@ -4,7 +4,7 @@ import { handleApiError } from '@/lib/api-error'
 import { dateRange } from '@/lib/db-utils'
 import { callLogStatsSchema } from '@/lib/validations/call-log'
 import { ApiSuccessResponse } from '@/types/api'
-import { CallStatus, CallType } from '@prisma/client'
+import { CallStatus, CallType } from '@/types/prisma-enums'
 
 // GET /api/call-logs/stats - Get call statistics
 export async function GET(request: NextRequest) {
@@ -66,14 +66,14 @@ export async function GET(request: NextRequest) {
     const stats = {
       total: totalCalls,
       byStatus: Object.fromEntries(
-        statusCounts.map((s) => [s.status, s._count])
+        statusCounts.map((s: any) => [s.status, s._count])
       ),
       byType: Object.fromEntries(
-        typeCounts.map((t) => [t.callType, t._count])
+        typeCounts.map((t: any) => [t.callType, t._count])
       ),
       avgDuration: Math.round(avgDuration._avg.duration || 0),
       successRate: totalCalls > 0
-        ? Math.round(((statusCounts.find(s => s.status === CallStatus.COMPLETED)?._count || 0) / totalCalls) * 100)
+        ? Math.round(((statusCounts.find((s: any) => s.status === CallStatus.COMPLETED)?._count || 0) / totalCalls) * 100)
         : 0,
     }
 
