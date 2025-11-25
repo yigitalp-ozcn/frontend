@@ -14,10 +14,6 @@ import {
   VisibilityState,
 } from "@tanstack/react-table"
 import {
-  FileText,
-  File,
-  Globe,
-  Type,
   Download,
   Trash2,
   Pencil,
