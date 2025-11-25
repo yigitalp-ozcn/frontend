@@ -85,7 +85,7 @@ type Campaign = {
   isStarted: boolean
 }
 
-type CallStatus = "pending" | "completed" | "canceled" | "missed"
+type CallStatus = "pending" | "completed" | "failed" | "canceled"
 
 type Call = {
   id: string
@@ -195,7 +195,7 @@ const mockCalls: Call[] = [
     callId: "CALL-009",
     recipientName: "Michael Thompson",
     phoneNumber: "+1 (555) 901-2345",
-    status: "missed",
+    status: "failed",
     duration: "0:00",
     timeStamp: "2024-11-15 03:00 PM",
     notes: "No answer, left voicemail",
@@ -240,7 +240,9 @@ export default function CampaignDetailPage() {
   const totalPages = Math.ceil(filteredCalls.length / pageSize)
 
   const handleCancelSelected = () => {
-    setCalls(calls.filter((c) => !selectedCalls.includes(c.id)))
+    setCalls(calls.map((c) =>
+      selectedCalls.includes(c.id) ? { ...c, status: "canceled" as CallStatus } : c
+    ))
     setSelectedCalls([])
     setIsCancelDialogOpen(false)
   }
@@ -267,6 +269,11 @@ export default function CampaignDetailPage() {
         return {
           label: "Completed",
           icon: <CheckCircle2 className="h-4 w-4 text-green-500" />,
+        }
+      case "failed":
+        return {
+          label: "Failed",
+          icon: <XCircle className="h-4 w-4 text-red-500" />,
         }
       case "canceled":
         return {
@@ -509,6 +516,7 @@ export default function CampaignDetailPage() {
                   <SelectItem value="all">All Status</SelectItem>
                   <SelectItem value="pending">Pending</SelectItem>
                   <SelectItem value="completed">Completed</SelectItem>
+                  <SelectItem value="failed">Failed</SelectItem>
                   <SelectItem value="canceled">Canceled</SelectItem>
                 </SelectContent>
               </Select>
@@ -571,7 +579,7 @@ export default function CampaignDetailPage() {
                           <div className="flex items-center justify-center">
                             <Checkbox
                               checked={selectedCalls.includes(call.id)}
-                              disabled={call.status === "completed" || call.status === "canceled" || call.status === "missed"}
+                              disabled={call.status === "completed" || call.status === "canceled" || call.status === "failed"}
                               onCheckedChange={(checked) => {
                                 if (checked) {
                                   setSelectedCalls([...selectedCalls, call.id])
