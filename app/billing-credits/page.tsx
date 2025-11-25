@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useSearchParams } from "next/navigation"
 import { PageHeader } from "@/components/page-header"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardHeader, CardTitle, CardContent, CardFooter, CardDescription, CardAction } from "@/components/ui/card"
@@ -16,6 +17,9 @@ import { Switch } from "@/components/ui/switch"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 
 export default function Page() {
+  const searchParams = useSearchParams()
+  const defaultTab = searchParams.get("tab") || "plan"
+
   const [customAmount, setCustomAmount] = useState(50)
   const [savePaymentMethod, setSavePaymentMethod] = useState(false)
   const [selectedPackage, setSelectedPackage] = useState<number | null>(null)
@@ -87,7 +91,7 @@ export default function Page() {
     <div className="flex flex-1 flex-col gap-4 p-4">
       <PageHeader title="Billing & Credits" />
       <div className="flex-1">
-        <Tabs defaultValue="plan" className="w-full">
+        <Tabs defaultValue={defaultTab} className="w-full">
           <TabsList>
             <TabsTrigger value="plan">Plan & Limits</TabsTrigger>
             <TabsTrigger value="purchase">Purchase Credits</TabsTrigger>

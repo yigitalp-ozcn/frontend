@@ -10,6 +10,9 @@ import {
   CreditCard,
   Route,
   Zap,
+  Building2,
+  Briefcase,
+  Store,
 } from "lucide-react"
 
 export const sidebarData = {
@@ -18,6 +21,23 @@ export const sidebarData = {
     email: "example@example.com",
     avatar: "/Avatar.png",
   },
+  organizations: [
+    {
+      name: "Acme Inc",
+      logo: Building2,
+      plan: "Enterprise",
+    },
+    {
+      name: "Acme Corp.",
+      logo: Briefcase,
+      plan: "Startup",
+    },
+    {
+      name: "Acme Store",
+      logo: Store,
+      plan: "Free",
+    },
+  ],
   navMain: [
     {
       title: "Dashboard",

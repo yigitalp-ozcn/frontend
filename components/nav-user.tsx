@@ -2,7 +2,7 @@
 
 import {
   Settings,
-  ChevronsUpDown,
+  MoreVertical,
   LogOut,
   CreditCard
 } from "lucide-react"
@@ -61,7 +61,7 @@ export function NavUser({
                   {user.email}
                 </span>
               </div>
-              <ChevronsUpDown className="ml-auto size-4" />
+              <MoreVertical className="ml-auto size-4" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent

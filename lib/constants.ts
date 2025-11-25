@@ -14,7 +14,7 @@ export const COUNTRY_CODES = [
 
 // Filter options
 export const CALL_TYPES = ["Inbound", "Outbound"]
-export const CALL_STATUSES = ["Completed", "Failed", "Missed", "In Progress"]
+export const CALL_STATUSES = ["Completed", "Failed", "In Progress"]
 export const AGENT_OPTIONS = ["Agent 1", "Agent 2", "Agent 3"]
 export const CAMPAIGN_OPTIONS = ["Summer Sale", "Product Launch", "Customer Support"]
 

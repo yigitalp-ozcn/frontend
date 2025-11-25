@@ -59,7 +59,6 @@ import {
   CheckCircle2,
   Clock,
   XCircle,
-  AlertCircle,
   MoreVertical,
   Trash2
 } from "lucide-react"
@@ -273,11 +272,6 @@ export default function CampaignDetailPage() {
         return {
           label: "Canceled",
           icon: <XCircle className="h-4 w-4 text-red-500" />,
-        }
-      case "missed":
-        return {
-          label: "Missed",
-          icon: <AlertCircle className="h-4 w-4 text-yellow-500" />,
         }
     }
   }
@@ -516,7 +510,6 @@ export default function CampaignDetailPage() {
                   <SelectItem value="pending">Pending</SelectItem>
                   <SelectItem value="completed">Completed</SelectItem>
                   <SelectItem value="canceled">Canceled</SelectItem>
-                  <SelectItem value="missed">Missed</SelectItem>
                 </SelectContent>
               </Select>
             </div>

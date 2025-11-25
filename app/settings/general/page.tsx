@@ -4,12 +4,10 @@ import { useState, useEffect } from "react"
 import { useTheme } from "next-themes"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Checkbox } from "@/components/ui/checkbox"
 import {
   Dialog,
   DialogContent,
@@ -19,22 +17,18 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import {
-  Shield,
-  Smartphone,
-  MessageSquare,
-  Key,
-  Download,
-  Copy,
-  CheckCircle,
   AlertTriangle,
-  AlertCircle,
   Eye,
   EyeOff,
   Check,
   X,
   Loader2,
   Crown,
+  Building2,
+  Upload,
+  Pencil,
 } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
 
 // Type definitions
 interface UserInfo {
@@ -55,6 +49,15 @@ interface PasswordRequirement {
   id: string
   label: string
   test: (password: string) => boolean
+}
+
+interface Organization {
+  name: string
+  logo: string
+  plan: "free" | "starter" | "pro" | "enterprise"
+  memberCount: number
+  userRole: "owner" | "admin" | "member"
+  isDefault: boolean
 }
 
 export default function GeneralSettingsPage() {
@@ -88,31 +91,28 @@ export default function GeneralSettingsPage() {
   const [passwordStrength, setPasswordStrength] = useState(0)
   const [isUpdatingPassword, setIsUpdatingPassword] = useState(false)
 
-  // 2FA State
-  const [twoFactorEnabled, setTwoFactorEnabled] = useState(false)
-  const [twoFactorDialogOpen, setTwoFactorDialogOpen] = useState(false)
-  const [disableTwoFactorDialogOpen, setDisableTwoFactorDialogOpen] = useState(false)
-  const [twoFactorStep, setTwoFactorStep] = useState(1)
-  const [selectedAuthMethod, setSelectedAuthMethod] = useState<"app" | "sms" | null>(null)
-  const [otpCode, setOtpCode] = useState(["", "", "", "", "", ""])
-  const [backupCodes] = useState([
-    "A3B5-9D2F",
-    "K7M1-4P8N",
-    "R2T6-3W9Q",
-    "F5H8-1L4S",
-    "Z9X2-6C7V",
-    "N4B8-5G1M",
-    "P7Q3-2R6T",
-    "W1Y5-9K4L",
-    "D8S2-3F7H",
-    "J6V9-4N1C",
-  ])
-  const [backupCodesConfirmed, setBackupCodesConfirmed] = useState(false)
-  const [isVerifyingOtp, setIsVerifyingOtp] = useState(false)
-  const [otpError, setOtpError] = useState(false)
-
   // Theme
   const { theme, setTheme } = useTheme()
+
+  // Organization State
+  const [organization, setOrganization] = useState<Organization>({
+    name: "Acme Inc",
+    logo: "",
+    plan: "pro",
+    memberCount: 4,
+    userRole: "owner",
+    isDefault: true,
+  })
+  const [originalOrganization, setOriginalOrganization] = useState<Organization>({
+    name: "Acme Inc",
+    logo: "",
+    plan: "pro",
+    memberCount: 4,
+    userRole: "owner",
+    isDefault: true,
+  })
+  const [isEditingOrg, setIsEditingOrg] = useState(false)
+  const [orgActionDialogOpen, setOrgActionDialogOpen] = useState(false)
 
   // Password Requirements
   const passwordRequirements: PasswordRequirement[] = [
@@ -176,82 +176,6 @@ export default function GeneralSettingsPage() {
     return "bg-green-500"
   }
 
-  // 2FA Functions
-  const handleEnable2FA = () => {
-    setTwoFactorDialogOpen(true)
-    setTwoFactorStep(1)
-    setSelectedAuthMethod(null)
-    setOtpCode(["", "", "", "", "", ""])
-    setBackupCodesConfirmed(false)
-  }
-
-  const handleOtpChange = (index: number, value: string) => {
-    if (!/^\d*$/.test(value)) return
-    
-    const newOtp = [...otpCode]
-    newOtp[index] = value.slice(-1)
-    setOtpCode(newOtp)
-    setOtpError(false)
-
-    if (value && index < 5) {
-      const nextInput = document.getElementById(`otp-${index + 1}`)
-      nextInput?.focus()
-    }
-  }
-
-  const handleOtpKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Backspace" && !otpCode[index] && index > 0) {
-      const prevInput = document.getElementById(`otp-${index - 1}`)
-      prevInput?.focus()
-    }
-  }
-
-  const handleVerifyOtp = async () => {
-    setIsVerifyingOtp(true)
-    await new Promise((resolve) => setTimeout(resolve, 1500))
-    
-    if (otpCode.every((digit) => digit !== "")) {
-      setIsVerifyingOtp(false)
-      setTwoFactorStep(4)
-    } else {
-      setIsVerifyingOtp(false)
-      setOtpError(true)
-      setOtpCode(["", "", "", "", "", ""])
-    }
-  }
-
-  useEffect(() => {
-    if (otpCode.every((digit) => digit !== "")) {
-      handleVerifyOtp()
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [otpCode])
-
-  const handleComplete2FASetup = () => {
-    setTwoFactorEnabled(true)
-    setTwoFactorDialogOpen(false)
-  }
-
-  const handleDisable2FA = () => {
-    setTwoFactorEnabled(false)
-    setDisableTwoFactorDialogOpen(false)
-  }
-
-  const handleDownloadBackupCodes = () => {
-    const text = backupCodes.join("\n")
-    const blob = new Blob([text], { type: "text/plain" })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement("a")
-    a.href = url
-    a.download = "backup-codes.txt"
-    a.click()
-    URL.revokeObjectURL(url)
-  }
-
-  const handleCopyBackupCodes = async () => {
-    await navigator.clipboard.writeText(backupCodes.join("\n"))
-  }
-
   const handleSaveSettings = () => {
     console.log("Saving settings:", userInfo)
     setOriginalUserInfo(userInfo)
@@ -265,6 +189,34 @@ export default function GeneralSettingsPage() {
 
   const hasInfoChanged = () => {
     return JSON.stringify(userInfo) !== JSON.stringify(originalUserInfo)
+  }
+
+  // Organization helpers
+  const getPlanLabel = (plan: Organization["plan"]) => {
+    switch (plan) {
+      case "free":
+        return "Free"
+      case "starter":
+        return "Starter"
+      case "pro":
+        return "Pro"
+      case "enterprise":
+        return "Enterprise"
+    }
+  }
+
+  const handleSaveOrganization = () => {
+    setOriginalOrganization(organization)
+    setIsEditingOrg(false)
+  }
+
+  const handleCancelOrgEdit = () => {
+    setOrganization(originalOrganization)
+    setIsEditingOrg(false)
+  }
+
+  const hasOrgChanged = () => {
+    return organization.name !== originalOrganization.name || organization.logo !== originalOrganization.logo
   }
 
   const timeZones = [
@@ -420,17 +372,9 @@ export default function GeneralSettingsPage() {
               </Button>
             </div>
           )}
-        </CardContent>
-      </Card>
 
-      {/* SECURITY CARD */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Security</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-6">
           {/* Password */}
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between pt-6 border-t">
             <div>
               <div className="font-medium">Password</div>
               <p className="text-sm text-muted-foreground">
@@ -441,65 +385,119 @@ export default function GeneralSettingsPage() {
               Change Password
             </Button>
           </div>
+        </CardContent>
+      </Card>
 
-          {/* Two-Factor Authentication */}
-          <div>
-            <div className="flex items-center justify-between">
-              <div className="font-medium">Two-factor authentication (2FA)</div>
-              {!twoFactorEnabled && (
-                <Button variant="outline" onClick={handleEnable2FA}>
-                  Enable 2FA
-                </Button>
+      {/* ORGANIZATION CARD */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Organization</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {/* Organization Logo, Name, Member Count & Close/Leave Button */}
+          <div className="flex items-center gap-4">
+            <div className="relative group cursor-pointer">
+              <div className="h-12 w-12 rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center border">
+                {organization.logo ? (
+                  <Avatar className="h-12 w-12 rounded-lg">
+                    <AvatarImage src={organization.logo} alt={organization.name} />
+                    <AvatarFallback className="rounded-lg">
+                      <Building2 className="h-6 w-6 text-muted-foreground" />
+                    </AvatarFallback>
+                  </Avatar>
+                ) : (
+                  <Building2 className="h-6 w-6 text-primary" />
+                )}
+              </div>
+              {isEditingOrg && (
+                <div className="absolute inset-0 bg-black/50 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                  <Upload className="h-4 w-4 text-white" />
+                </div>
               )}
             </div>
-            
-            {!twoFactorEnabled ? (
-              <p className="text-sm text-muted-foreground">
-                Two-factor authentication is currently disabled.{" "}
-                <a href="#" className="text-primary hover:underline">
-                  Learn more
-                </a>
-              </p>
-            ) : (
-              <div className="space-y-4 mt-4">
-                {/* 2FA Enabled State */}
-                <div className="flex items-start gap-3 p-4 bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-900 rounded-lg">
-                  <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
-                  <div className="flex-1">
-                    <p className="text-sm text-green-900 dark:text-green-100">
-                      Two-factor authentication is enabled. Your account is protected.
-                    </p>
-                  </div>
-                </div>
 
-                {/* Active Method */}
-                <div className="flex items-center justify-between p-4 border rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <Smartphone className="h-5 w-5 text-muted-foreground" />
-                    <div>
-                      <div className="font-medium">Authenticator App</div>
-                      <div className="text-sm text-muted-foreground">Active since Nov 1, 2024</div>
-                    </div>
+            <div className="flex-1">
+              {isEditingOrg ? (
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <Input
+                      value={organization.name}
+                      onChange={(e) => setOrganization({ ...organization, name: e.target.value })}
+                      className="font-semibold w-64"
+                    />
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={handleCancelOrgEdit}
+                      className="h-8 w-8"
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={handleSaveOrganization}
+                      disabled={!hasOrgChanged()}
+                      className="h-8 w-8"
+                    >
+                      <Check className="h-4 w-4" />
+                    </Button>
                   </div>
-                  <Badge variant="outline" className="border-green-500/50 text-green-700 dark:text-green-400">
-                    Active
-                  </Badge>
+                  <p className="text-sm text-muted-foreground">{organization.memberCount} members</p>
                 </div>
+              ) : (
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="font-semibold">{organization.name}</span>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setIsEditingOrg(true)}
+                      className="h-8 w-8"
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  <p className="text-sm text-muted-foreground">{organization.memberCount} members</p>
+                </div>
+              )}
+            </div>
 
-                {/* Disable Button */}
-                <div className="flex justify-end">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="text-destructive hover:text-destructive"
-                    onClick={() => setDisableTwoFactorDialogOpen(true)}
-                  >
-                    Disable 2FA
-                  </Button>
-                </div>
-              </div>
+            {!isEditingOrg && (
+              <Button
+                variant="outline"
+                size="sm"
+                className="text-destructive hover:text-destructive border-destructive/50 hover:bg-destructive/10"
+                onClick={() => setOrgActionDialogOpen(true)}
+                disabled={organization.isDefault}
+              >
+                {organization.userRole === "owner" ? "Close" : "Leave"}
+              </Button>
             )}
           </div>
+
+          {/* Plan */}
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="font-medium">Plan</div>
+              <p className="text-sm text-muted-foreground">{getPlanLabel(organization.plan)}</p>
+            </div>
+            <Button variant="outline" size="sm" asChild>
+              <a href="/billing-credits">Manage</a>
+            </Button>
+          </div>
+
+          {/* Balance */}
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="font-medium">Balance</div>
+              <p className="text-sm text-muted-foreground">$125.00</p>
+            </div>
+            <Button variant="outline" size="sm" asChild>
+              <a href="/billing-credits?tab=purchase">Add Credits</a>
+            </Button>
+          </div>
+
         </CardContent>
       </Card>
 
@@ -665,225 +663,51 @@ export default function GeneralSettingsPage() {
         </DialogContent>
       </Dialog>
 
-      {/* ENABLE 2FA DIALOG */}
-      <Dialog open={twoFactorDialogOpen} onOpenChange={setTwoFactorDialogOpen}>
+      {/* ORGANIZATION ACTION DIALOG (Close/Leave) */}
+      <Dialog open={orgActionDialogOpen} onOpenChange={setOrgActionDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Enable Two-Factor Authentication - Step {twoFactorStep} of 4</DialogTitle>
+            <DialogTitle>
+              {organization.userRole === "owner" ? "Close Organization" : "Leave Organization"}
+            </DialogTitle>
             <DialogDescription>
-              {twoFactorStep === 1 && "Choose your authentication method"}
-              {twoFactorStep === 2 && "Scan the QR code with your authenticator app"}
-              {twoFactorStep === 3 && "Enter the verification code"}
-              {twoFactorStep === 4 && "Save your backup codes"}
-            </DialogDescription>
-          </DialogHeader>
-
-          {/* STEP 1: Choose Method */}
-          {twoFactorStep === 1 && (
-            <div className="space-y-4">
-              <div className="space-y-3">
-                {/* Authenticator App */}
-                <div
-                  className={`flex items-center gap-3 rounded-lg border p-4 cursor-pointer ${
-                    selectedAuthMethod === "app" ? "border-primary" : "border-border"
-                  }`}
-                  onClick={() => setSelectedAuthMethod("app")}
-                >
-                  <Smartphone className="h-5 w-5 text-muted-foreground flex-shrink-0" />
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium">Authenticator App</span>
-                      <Badge className="text-xs bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-400 border-0">Recommended</Badge>
-                    </div>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      Use Google Authenticator, Authy, or similar apps
-                    </p>
-                  </div>
-                </div>
-
-                {/* SMS */}
-                <div
-                  className={`flex items-center gap-3 rounded-lg border p-4 cursor-pointer ${
-                    selectedAuthMethod === "sms" ? "border-primary" : "border-border"
-                  }`}
-                  onClick={() => setSelectedAuthMethod("sms")}
-                >
-                  <MessageSquare className="h-5 w-5 text-muted-foreground flex-shrink-0" />
-                  <div className="flex-1">
-                    <span className="font-medium">SMS (Text Message)</span>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      Receive codes via text message
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <DialogFooter>
-                <Button variant="outline" onClick={() => setTwoFactorDialogOpen(false)}>
-                  Cancel
-                </Button>
-                <Button disabled={!selectedAuthMethod} onClick={() => setTwoFactorStep(2)}>
-                  Continue
-                </Button>
-              </DialogFooter>
-            </div>
-          )}
-
-          {/* STEP 2: Scan QR */}
-          {twoFactorStep === 2 && (
-            <div className="space-y-4">
-              <div className="flex justify-center">
-                <div className="w-48 h-48 border rounded-lg p-4 bg-muted flex items-center justify-center">
-                  <span className="text-sm text-muted-foreground">QR Code</span>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label>Or enter this code manually</Label>
-                <div className="flex items-center gap-2">
-                  <code className="flex-1 text-sm bg-muted px-3 py-2 rounded font-mono">
-                    JBSWY3DPEHPK3PXP
-                  </code>
-                  <Button variant="outline" size="icon">
-                    <Copy className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-
-              <DialogFooter>
-                <Button variant="outline" onClick={() => setTwoFactorStep(1)}>
-                  Back
-                </Button>
-                <Button onClick={() => setTwoFactorStep(3)}>Continue</Button>
-              </DialogFooter>
-            </div>
-          )}
-
-          {/* STEP 3: Verify */}
-          {twoFactorStep === 3 && (
-            <div className="space-y-4">
-              <div className="flex justify-center gap-2">
-                {otpCode.map((digit, index) => (
-                  <Input
-                    key={index}
-                    id={`otp-${index}`}
-                    type="text"
-                    maxLength={1}
-                    value={digit}
-                    onChange={(e) => handleOtpChange(index, e.target.value)}
-                    onKeyDown={(e) => handleOtpKeyDown(index, e)}
-                    className="w-12 h-12 text-center text-lg font-mono"
-                  />
-                ))}
-              </div>
-
-              {isVerifyingOtp && (
-                <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  <span>Verifying...</span>
-                </div>
-              )}
-
-              {otpError && (
-                <div className="flex items-center justify-center gap-2 text-sm text-destructive">
-                  <AlertCircle className="h-4 w-4" />
-                  <span>Invalid code. Please try again.</span>
-                </div>
-              )}
-
-              <DialogFooter>
-                <Button variant="outline" onClick={() => setTwoFactorStep(2)}>
-                  Back
-                </Button>
-                <Button
-                  disabled={otpCode.some((d) => !d) || isVerifyingOtp}
-                  onClick={handleVerifyOtp}
-                >
-                  Verify
-                </Button>
-              </DialogFooter>
-            </div>
-          )}
-
-          {/* STEP 4: Backup Codes */}
-          {twoFactorStep === 4 && (
-            <div className="space-y-4">
-              <div className="flex items-start gap-3 p-3 bg-yellow-50 dark:bg-yellow-950 border border-yellow-200 dark:border-yellow-900 rounded-lg">
-                <AlertTriangle className="h-5 w-5 text-yellow-600 dark:text-yellow-400 flex-shrink-0" />
-                <p className="text-sm text-yellow-900 dark:text-yellow-100">
-                  Save these codes in a safe place. You'll need them if you lose your device.
-                </p>
-              </div>
-
-              <div className="grid grid-cols-2 gap-2 p-3 bg-muted rounded-lg">
-                {backupCodes.map((code, i) => (
-                  <code key={i} className="text-sm font-mono bg-background px-2 py-1.5 rounded text-center">
-                    {code}
-                  </code>
-                ))}
-              </div>
-
-              <div className="flex gap-2">
-                <Button variant="outline" className="flex-1" onClick={handleDownloadBackupCodes}>
-                  <Download className="h-4 w-4 mr-2" />
-                  Download
-                </Button>
-                <Button variant="outline" className="flex-1" onClick={handleCopyBackupCodes}>
-                  <Copy className="h-4 w-4 mr-2" />
-                  Copy All
-                </Button>
-              </div>
-
-              <div className="flex items-start gap-2">
-                <Checkbox
-                  id="confirm-saved"
-                  checked={backupCodesConfirmed}
-                  onCheckedChange={(checked) => setBackupCodesConfirmed(checked === true)}
-                />
-                <Label htmlFor="confirm-saved" className="text-sm cursor-pointer">
-                  I have saved my backup codes in a safe place
-                </Label>
-              </div>
-
-              <DialogFooter>
-                <Button variant="outline" onClick={() => setTwoFactorStep(3)}>
-                  Back
-                </Button>
-                <Button
-                  disabled={!backupCodesConfirmed}
-                  onClick={handleComplete2FASetup}
-                >
-                  Complete Setup
-                </Button>
-              </DialogFooter>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
-
-      {/* DISABLE 2FA CONFIRMATION DIALOG */}
-      <Dialog open={disableTwoFactorDialogOpen} onOpenChange={setDisableTwoFactorDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Disable Two-Factor Authentication</DialogTitle>
-            <DialogDescription>
-              Are you sure you want to disable two-factor authentication? This will make your account less secure.
+              {organization.userRole === "owner"
+                ? `Are you sure you want to close "${organization.name}"? This action cannot be undone.`
+                : `Are you sure you want to leave "${organization.name}"?`}
             </DialogDescription>
           </DialogHeader>
 
           <div className="flex items-start gap-3 p-3 bg-yellow-50 dark:bg-yellow-950 border border-yellow-200 dark:border-yellow-900 rounded-lg">
             <AlertTriangle className="h-5 w-5 text-yellow-600 dark:text-yellow-400 flex-shrink-0" />
-            <p className="text-sm text-yellow-900 dark:text-yellow-100">
-              Your account will be more vulnerable to unauthorized access without 2FA protection.
-            </p>
+            <div className="text-sm text-yellow-900 dark:text-yellow-100">
+              {organization.userRole === "owner" ? (
+                <>
+                  <p className="font-medium">This will permanently:</p>
+                  <ul className="list-disc list-inside mt-1 space-y-0.5">
+                    <li>Delete all organization data</li>
+                    <li>Remove all team members</li>
+                    <li>Cancel any active subscriptions</li>
+                  </ul>
+                </>
+              ) : (
+                <>
+                  <p>You will lose access to:</p>
+                  <ul className="list-disc list-inside mt-1 space-y-0.5">
+                    <li>All organization resources and data</li>
+                    <li>Shared agents and knowledge bases</li>
+                    <li>Team collaboration features</li>
+                  </ul>
+                </>
+              )}
+            </div>
           </div>
 
           <DialogFooter>
-            <Button variant="outline" onClick={() => setDisableTwoFactorDialogOpen(false)}>
+            <Button variant="outline" onClick={() => setOrgActionDialogOpen(false)}>
               Cancel
             </Button>
-            <Button variant="destructive-outline" onClick={handleDisable2FA}>
-              Disable 2FA
+            <Button variant="destructive-outline" onClick={() => setOrgActionDialogOpen(false)}>
+              {organization.userRole === "owner" ? "Close Organization" : "Leave Organization"}
             </Button>
           </DialogFooter>
         </DialogContent>

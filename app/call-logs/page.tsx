@@ -72,7 +72,7 @@ const mockCallLogs = [
     phoneNumber: "+1 234 567 8903",
     timeStamp: "2024-01-14 02:15 PM",
     duration: "0m 00s",
-    status: "Missed",
+    status: "Failed",
     campaign: "Customer Support",
   },
   {
