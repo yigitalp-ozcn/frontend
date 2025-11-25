@@ -98,6 +98,12 @@ const getStatusIcon = (status: string) => {
   }
 }
 
+// Pre-calculate waveform bar heights - static data that never changes
+const WAVEFORM_BARS = Array.from({ length: 140 }).map((_, i) => ({
+  height: Math.sin(i * 0.2) * 20 + (Math.sin(i * 0.7) * 7) + 18,
+  index: i,
+}))
+
 // Move columns outside component to prevent recreation on every render
 const columns: ColumnDef<z.infer<typeof schema>>[] = [
   {
@@ -590,23 +596,15 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
               {/* Full Width Waveform */}
               <div className={`relative mb-4 ${isWaveformDisabled ? 'opacity-40 pointer-events-none' : ''}`}>
                 <div className="flex h-12 w-full items-end gap-[2px]">
-                  {React.useMemo(() =>
-                    Array.from({ length: 140 }).map((_, i) => {
-                      const height = Math.sin(i * 0.2) * 20 + (Math.sin(i * 0.7) * 7) + 18
-                      return { height, index: i }
-                    }), []
-                  ).map(({ height, index }) => {
-                    const isActive = index < (progress * 1.4)
-                    return (
-                      <div
-                        key={index}
-                        className={`flex-1 rounded-sm transition-all duration-100 ${
-                          isActive ? 'bg-primary' : 'bg-muted-foreground/20'
-                        }`}
-                        style={{ height: `${height}px` }}
-                      />
-                    )
-                  })}
+                  {WAVEFORM_BARS.map(({ height, index }) => (
+                    <div
+                      key={index}
+                      className={`flex-1 rounded-sm transition-all duration-100 ${
+                        index < (progress * 1.4) ? 'bg-primary' : 'bg-muted-foreground/20'
+                      }`}
+                      style={{ height: `${height}px` }}
+                    />
+                  ))}
                 </div>
                 {/* Invisible Slider Overlay */}
                 <input
