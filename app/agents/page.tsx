@@ -164,6 +164,13 @@ const mockAgents: Agent[] = [
   },
 ]
 
+// Static chart config - moved outside component to prevent recreation
+const CHART_CONFIG = {
+  calls: {
+    label: "Calls",
+    color: "hsl(142, 76%, 36%)",
+  },
+} as const
 
 export default function Page() {
   const router = useRouter()
@@ -547,12 +554,7 @@ export default function Page() {
                     <div className="space-y-1.5">
                       <span className="text-sm font-medium">Call Activity</span>
                       <ChartContainer
-                        config={{
-                          calls: {
-                            label: "Calls",
-                            color: "hsl(142, 76%, 36%)",
-                          },
-                        }}
+                        config={CHART_CONFIG}
                         className="h-[100px] w-full"
                       >
                         <AreaChart data={agent.callActivity}>

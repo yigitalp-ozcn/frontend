@@ -36,6 +36,7 @@ import { Search, ArrowUpDown, Filter, X, Upload } from "lucide-react"
 import { DataTable } from "@/components/call-table"
 import { Badge } from "@/components/ui/badge"
 import { CALL_TYPES, CALL_STATUSES, AGENT_OPTIONS, CAMPAIGN_OPTIONS } from "@/lib/constants"
+import { createToggleFunction } from "@/lib/helpers"
 
 // Mock data for call logs
 const mockCallLogs = [
@@ -133,21 +134,15 @@ export default function Page() {
   const [reportAgents, setReportAgents] = useState<string[]>([])
   const [reportCampaigns, setReportCampaigns] = useState<string[]>([])
 
-  // Generic toggle function for filters - consolidates 8 duplicate functions into one
-  const createToggle = <T,>(setter: React.Dispatch<React.SetStateAction<T[]>>) => {
-    return (item: T) => {
-      setter((prev) => prev.includes(item) ? prev.filter((i) => i !== item) : [...prev, item])
-    }
-  }
-
-  const toggleReportCallType = createToggle(setReportCallTypes)
-  const toggleReportStatus = createToggle(setReportStatuses)
-  const toggleReportAgent = createToggle(setReportAgents)
-  const toggleReportCampaign = createToggle(setReportCampaigns)
-  const toggleCallType = createToggle(setSelectedCallTypes)
-  const toggleStatus = createToggle(setSelectedStatuses)
-  const toggleAgent = createToggle(setSelectedAgents)
-  const toggleCampaign = createToggle(setSelectedCampaigns)
+  // Use imported toggle function from lib/helpers
+  const toggleReportCallType = createToggleFunction(setReportCallTypes)
+  const toggleReportStatus = createToggleFunction(setReportStatuses)
+  const toggleReportAgent = createToggleFunction(setReportAgents)
+  const toggleReportCampaign = createToggleFunction(setReportCampaigns)
+  const toggleCallType = createToggleFunction(setSelectedCallTypes)
+  const toggleStatus = createToggleFunction(setSelectedStatuses)
+  const toggleAgent = createToggleFunction(setSelectedAgents)
+  const toggleCampaign = createToggleFunction(setSelectedCampaigns)
 
   const handleDownloadReport = () => {
     console.log("Downloading report...", {
