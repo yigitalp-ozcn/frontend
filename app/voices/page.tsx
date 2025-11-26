@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useCallback, useMemo } from "react"
 import { PageHeader } from "@/components/page-header"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -445,49 +445,51 @@ export default function Page() {
   const voiceUsage = myVoices.length
   const voicePercentage = (voiceUsage / VOICE_LIMIT) * 100
 
-  // Filter voices based on search and gender
-  const filteredVoices = voices.filter((voice) => {
-    const matchesSearch = 
-      voice.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      voice.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      voice.tags.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase()))
-    
-    const matchesGender = genderFilter === 'all' || voice.gender === genderFilter
+  // Filter voices based on search and gender - memoized
+  const filteredVoices = useMemo(() => {
+    return voices.filter((voice) => {
+      const matchesSearch =
+        voice.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        voice.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        voice.tags.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase()))
 
-    return matchesSearch && matchesGender
-  })
+      const matchesGender = genderFilter === 'all' || voice.gender === genderFilter
+
+      return matchesSearch && matchesGender
+    })
+  }, [searchQuery, genderFilter])
 
   // Reset to page 1 when filters change
-  const handleSearchChange = (value: string) => {
+  const handleSearchChange = useCallback((value: string) => {
     setSearchQuery(value)
     setCurrentPage(1)
-  }
+  }, [])
 
-  const handleGenderFilterChange = (value: string) => {
+  const handleGenderFilterChange = useCallback((value: string) => {
     setGenderFilter(value)
     setCurrentPage(1)
-  }
+  }, [])
 
-  const handleOpenCustomizeDialog = () => {
+  const handleOpenCustomizeDialog = useCallback(() => {
     setTempExampleText(exampleText)
     setIsCustomizeDialogOpen(true)
-  }
+  }, [exampleText])
 
-  const handleSaveExampleText = () => {
+  const handleSaveExampleText = useCallback(() => {
     setExampleText(tempExampleText)
     setIsCustomizeDialogOpen(false)
-  }
+  }, [tempExampleText])
 
-  const handleCancelCustomizeDialog = () => {
+  const handleCancelCustomizeDialog = useCallback(() => {
     setTempExampleText(exampleText)
     setIsCustomizeDialogOpen(false)
-  }
+  }, [exampleText])
 
-  const handleOpenCreateVoiceDialog = () => {
+  const handleOpenCreateVoiceDialog = useCallback(() => {
     setIsCreateVoiceDialogOpen(true)
-  }
+  }, [])
 
-  const handleCreateVoice = () => {
+  const handleCreateVoice = useCallback(() => {
     // Here you would implement the actual voice cloning logic
     console.log('Creating voice clone:', {
       name: voiceName,
@@ -495,47 +497,47 @@ export default function Page() {
       gender: voiceGender,
       audioFiles: audioFiles,
     })
-    
+
     // Reset form
     setVoiceName('')
     setVoiceDescription('')
     setVoiceGender('Male')
     setAudioFiles([])
     setIsCreateVoiceDialogOpen(false)
-  }
+  }, [voiceName, voiceDescription, voiceGender, audioFiles])
 
-  const handleCancelCreateVoice = () => {
+  const handleCancelCreateVoice = useCallback(() => {
     setVoiceName('')
     setVoiceDescription('')
     setVoiceGender('Male')
     setAudioFiles([])
     setIsCreateVoiceDialogOpen(false)
-  }
+  }, [])
 
-  const isVoiceFormValid = voiceName.trim() !== '' && audioFiles.length > 0
+  const isVoiceFormValid = useMemo(
+    () => voiceName.trim() !== '' && audioFiles.length > 0,
+    [voiceName, audioFiles.length]
+  )
 
-  const handlePlayToggle = (voiceId: string) => {
-    if (playingVoiceId === voiceId) {
-      // Stop playing
-      setPlayingVoiceId(null)
-    } else {
-      // Start playing
-      setPlayingVoiceId(voiceId)
-    }
-  }
+  const handlePlayToggle = useCallback((voiceId: string) => {
+    setPlayingVoiceId(prev => prev === voiceId ? null : voiceId)
+  }, [])
 
-  const handleDeleteVoice = (voiceId: string) => {
-    setMyVoices(myVoices.filter(voice => voice.id !== voiceId))
-    if (playingVoiceId === voiceId) {
-      setPlayingVoiceId(null)
-    }
-  }
+  const handleDeleteVoice = useCallback((voiceId: string) => {
+    setMyVoices(prev => prev.filter(voice => voice.id !== voiceId))
+    setPlayingVoiceId(prev => prev === voiceId ? null : prev)
+  }, [])
 
-  // Pagination
-  const totalPages = Math.ceil(filteredVoices.length / itemsPerPage)
-  const startIndex = (currentPage - 1) * itemsPerPage
-  const endIndex = startIndex + itemsPerPage
-  const currentVoices = filteredVoices.slice(startIndex, endIndex)
+  // Pagination - memoized
+  const totalPages = useMemo(
+    () => Math.ceil(filteredVoices.length / itemsPerPage),
+    [filteredVoices.length]
+  )
+  const currentVoices = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage
+    const endIndex = startIndex + itemsPerPage
+    return filteredVoices.slice(startIndex, endIndex)
+  }, [filteredVoices, currentPage])
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4">

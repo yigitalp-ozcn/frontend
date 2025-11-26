@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useCallback, useMemo } from "react"
 import { useRouter } from "next/navigation"
 import { PageHeader } from "@/components/page-header"
 import { Button } from "@/components/ui/button"
@@ -86,46 +86,46 @@ export default function Page() {
     },
   ])
 
-  const handleOpenCreateDialog = () => {
+  const handleOpenCreateDialog = useCallback(() => {
     setIsCreateDialogOpen(true)
-  }
+  }, [])
 
-  const handleCreateEvent = () => {
+  const handleCreateEvent = useCallback(() => {
     if (eventName.trim()) {
       // Generate a simple ID from the event name
       const eventId = eventName.toLowerCase().replace(/\s+/g, '-')
-      
+
       // Close dialog and navigate to event settings page
       setIsCreateDialogOpen(false)
       setEventName("")
       router.push(`/events/${eventId}`)
     }
-  }
+  }, [eventName, router])
 
-  const handleCancelCreate = () => {
+  const handleCancelCreate = useCallback(() => {
     setEventName("")
     setIsCreateDialogOpen(false)
-  }
+  }, [])
 
-  const handleToggleEvent = (eventId: string) => {
-    setEvents(events.map(event => 
+  const handleToggleEvent = useCallback((eventId: string) => {
+    setEvents(prev => prev.map(event =>
       event.id === eventId ? { ...event, isEnabled: !event.isEnabled } : event
     ))
-  }
+  }, [])
 
-  const handleCopyWebhook = (url: string) => {
+  const handleCopyWebhook = useCallback((url: string) => {
     navigator.clipboard.writeText(url)
-  }
+  }, [])
 
-  const handleOpenPayload = (eventId: string) => {
+  const handleOpenPayload = useCallback((eventId: string) => {
     setSelectedPayload(eventId)
-  }
+  }, [])
 
-  const handleClosePayload = () => {
+  const handleClosePayload = useCallback(() => {
     setSelectedPayload(null)
-  }
+  }, [])
 
-  const handleCopyPayload = (eventId: string) => {
+  const handleCopyPayload = useCallback((eventId: string) => {
     const payload = JSON.stringify({
       event: eventId,
       timestamp: new Date().toISOString(),
@@ -137,9 +137,9 @@ export default function Page() {
       }
     }, null, 2)
     navigator.clipboard.writeText(payload)
-  }
+  }, [])
 
-  const isFormValid = eventName.trim() !== ""
+  const isFormValid = useMemo(() => eventName.trim() !== "", [eventName])
   const hasEvents = events.length > 0
 
   return (

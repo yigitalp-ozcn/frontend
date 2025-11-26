@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useCallback } from "react"
 import { PageHeader } from "@/components/page-header"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -134,17 +134,17 @@ export default function Page() {
   const [reportAgents, setReportAgents] = useState<string[]>([])
   const [reportCampaigns, setReportCampaigns] = useState<string[]>([])
 
-  // Use imported toggle function from lib/helpers
-  const toggleReportCallType = createToggleFunction(setReportCallTypes)
-  const toggleReportStatus = createToggleFunction(setReportStatuses)
-  const toggleReportAgent = createToggleFunction(setReportAgents)
-  const toggleReportCampaign = createToggleFunction(setReportCampaigns)
-  const toggleCallType = createToggleFunction(setSelectedCallTypes)
-  const toggleStatus = createToggleFunction(setSelectedStatuses)
-  const toggleAgent = createToggleFunction(setSelectedAgents)
-  const toggleCampaign = createToggleFunction(setSelectedCampaigns)
+  // Memoized toggle functions to prevent recreation on every render
+  const toggleReportCallType = useMemo(() => createToggleFunction(setReportCallTypes), [])
+  const toggleReportStatus = useMemo(() => createToggleFunction(setReportStatuses), [])
+  const toggleReportAgent = useMemo(() => createToggleFunction(setReportAgents), [])
+  const toggleReportCampaign = useMemo(() => createToggleFunction(setReportCampaigns), [])
+  const toggleCallType = useMemo(() => createToggleFunction(setSelectedCallTypes), [])
+  const toggleStatus = useMemo(() => createToggleFunction(setSelectedStatuses), [])
+  const toggleAgent = useMemo(() => createToggleFunction(setSelectedAgents), [])
+  const toggleCampaign = useMemo(() => createToggleFunction(setSelectedCampaigns), [])
 
-  const handleDownloadReport = () => {
+  const handleDownloadReport = useCallback(() => {
     console.log("Downloading report...", {
       email: reportEmail,
       dateRange: reportDateRange,
@@ -162,22 +162,22 @@ export default function Page() {
     setReportStatuses([])
     setReportAgents([])
     setReportCampaigns([])
-  }
+  }, [reportEmail, reportDateRange, reportCallTypes, reportStatuses, reportAgents, reportCampaigns])
 
-  const clearAllFilters = () => {
+  const clearAllFilters = useCallback(() => {
     setSelectedCallTypes([])
     setSelectedStatuses([])
     setSelectedAgents([])
     setSelectedCampaigns([])
-  }
+  }, [])
 
-  const getActiveFilterCount = () => {
+  const activeFilterCount = useMemo(() => {
     return selectedCallTypes.length + selectedStatuses.length + selectedAgents.length + selectedCampaigns.length
-  }
+  }, [selectedCallTypes.length, selectedStatuses.length, selectedAgents.length, selectedCampaigns.length])
 
-  const getActiveFilterGroups = () => {
+  const activeFilterGroups = useMemo(() => {
     const groups: Array<{ category: string; values: string[]; onClear: () => void }> = []
-    
+
     if (selectedCallTypes.length > 0) {
       groups.push({
         category: "Call Types",
@@ -185,7 +185,7 @@ export default function Page() {
         onClear: () => setSelectedCallTypes([])
       })
     }
-    
+
     if (selectedStatuses.length > 0) {
       groups.push({
         category: "Statuses",
@@ -193,7 +193,7 @@ export default function Page() {
         onClear: () => setSelectedStatuses([])
       })
     }
-    
+
     if (selectedAgents.length > 0) {
       groups.push({
         category: "Agents",
@@ -201,7 +201,7 @@ export default function Page() {
         onClear: () => setSelectedAgents([])
       })
     }
-    
+
     if (selectedCampaigns.length > 0) {
       groups.push({
         category: "Campaigns",
@@ -209,9 +209,9 @@ export default function Page() {
         onClear: () => setSelectedCampaigns([])
       })
     }
-    
+
     return groups
-  }
+  }, [selectedCallTypes, selectedStatuses, selectedAgents, selectedCampaigns])
 
   // Filter and search data
   const filteredData = useMemo(() => {
@@ -500,9 +500,9 @@ export default function Page() {
               <Button variant="outline" className="gap-2">
                 <Filter className="h-4 w-4" />
                 Filter
-                {getActiveFilterCount() > 0 && (
+                {activeFilterCount > 0 && (
                   <span className="rounded-full bg-primary px-2 py-0.5 text-xs text-primary-foreground">
-                    {getActiveFilterCount()}
+                    {activeFilterCount}
                   </span>
                 )}
               </Button>
@@ -712,10 +712,10 @@ export default function Page() {
         </div>
 
         {/* Active Filters */}
-        {getActiveFilterGroups().length > 0 && (
+        {activeFilterGroups.length > 0 && (
           <div className="flex items-center gap-2 flex-wrap">
             <span className="text-sm text-muted-foreground">Showing:</span>
-            {getActiveFilterGroups().map((group) => (
+            {activeFilterGroups.map((group) => (
               <Badge
                 key={group.category}
                 variant="secondary"
@@ -734,7 +734,7 @@ export default function Page() {
                 </button>
               </Badge>
             ))}
-            {getActiveFilterGroups().length > 1 && (
+            {activeFilterGroups.length > 1 && (
               <Button
                 variant="ghost"
                 size="sm"
