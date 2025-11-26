@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useCallback, useMemo } from "react"
 import { Phone, ChevronRight, Check, MoreVertical, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -93,32 +93,31 @@ export default function Page() {
   const [enableOutbound, setEnableOutbound] = useState(false)
   const totalSteps = 3
 
-  const handleDeleteClick = (id: string) => {
+  const handleDeleteClick = useCallback((id: string) => {
     setSelectedPhoneId(id)
     setIsDeleteDialogOpen(true)
-  }
+  }, [])
 
-  const handleDeleteConfirm = () => {
+  const handleDeleteConfirm = useCallback(() => {
     console.log("Deleting phone number:", selectedPhoneId)
     setIsDeleteDialogOpen(false)
     setSelectedPhoneId(null)
-  }
+  }, [selectedPhoneId])
 
-  const selectedPhone = mockPhoneNumbers.find((phone) => phone.id === selectedPhoneId)
+  const selectedPhone = useMemo(
+    () => mockPhoneNumbers.find((phone) => phone.id === selectedPhoneId),
+    [selectedPhoneId]
+  )
 
-  const nextStep = () => {
-    if (currentStep < totalSteps) {
-      setCurrentStep(currentStep + 1)
-    }
-  }
+  const nextStep = useCallback(() => {
+    setCurrentStep((prev) => (prev < totalSteps ? prev + 1 : prev))
+  }, [])
 
-  const prevStep = () => {
-    if (currentStep > 1) {
-      setCurrentStep(currentStep - 1)
-    }
-  }
+  const prevStep = useCallback(() => {
+    setCurrentStep((prev) => (prev > 1 ? prev - 1 : prev))
+  }, [])
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = useCallback((e: React.FormEvent) => {
     e.preventDefault()
     if (currentStep === totalSteps) {
       // Final submit
@@ -127,11 +126,11 @@ export default function Page() {
       setEnableInbound(false)
       setEnableOutbound(false)
     } else {
-      nextStep()
+      setCurrentStep((prev) => prev + 1)
     }
-  }
+  }, [currentStep])
 
-  const handleDialogOpenChange = (open: boolean) => {
+  const handleDialogOpenChange = useCallback((open: boolean) => {
     setIsDialogOpen(open)
     if (open) {
       // Reset state when opening dialog
@@ -139,7 +138,7 @@ export default function Page() {
       setEnableInbound(false)
       setEnableOutbound(false)
     }
-  }
+  }, [])
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4">

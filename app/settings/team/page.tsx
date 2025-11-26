@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useCallback } from "react"
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -78,13 +78,13 @@ export default function TeamSettingsPage() {
   const [inviteEmail, setInviteEmail] = useState("")
   const [inviteRole, setInviteRole] = useState<"owner" | "admin" | "viewer">("viewer")
 
-  const handleInvite = () => {
+  const handleInvite = useCallback(() => {
     // Handle invite logic here
     console.log("Inviting:", inviteEmail, inviteRole)
     setIsInviteDialogOpen(false)
     setInviteEmail("")
     setInviteRole("viewer")
-  }
+  }, [inviteEmail, inviteRole])
 
   return (
     <>

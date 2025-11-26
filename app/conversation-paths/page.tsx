@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import { PageHeader } from "@/components/page-header"
 import { Button } from "@/components/ui/button"
@@ -41,7 +41,7 @@ export default function Page() {
   // Progress states
   const [isGenerating, setIsGenerating] = useState(false)
   const [progress, setProgress] = useState(0)
-  const handleDialogOpen = (open: boolean) => {
+  const handleDialogOpen = useCallback((open: boolean) => {
     setDialogOpen(open)
     if (open) {
       setMode("generate")
@@ -52,17 +52,17 @@ export default function Page() {
       setIsGenerating(false)
       setProgress(0)
     }
-  }
+  }, [])
 
-  const handleModeSwitch = () => {
+  const handleModeSwitch = useCallback(() => {
     setMode("scratch")
-  }
+  }, [])
 
   // Validation
   const isGenerateValid = pathwayName.trim() !== "" && useCase.trim() !== "" && agentSpeech.trim() !== ""
   const isCreateValid = pathwayName.trim() !== ""
 
-  // Progress simulation
+  // Progress simulation - router is stable in Next.js App Router, no need as dependency
   useEffect(() => {
     if (isGenerating) {
       const interval = setInterval(() => {
@@ -79,21 +79,21 @@ export default function Page() {
           return prev + 10
         })
       }, 300)
-      
+
       return () => clearInterval(interval)
     }
-  }, [isGenerating, router])
+  }, [isGenerating]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  const handleGenerate = () => {
+  const handleGenerate = useCallback(() => {
     setIsGenerating(true)
     setProgress(0)
-  }
+  }, [])
 
-  const handleCreate = () => {
+  const handleCreate = useCallback(() => {
     // Create pathway and redirect
     const newId = Date.now().toString()
     router.push(`/conversation-paths/${newId}`)
-  }
+  }, [router])
 
   return (
     <Dialog open={dialogOpen} onOpenChange={handleDialogOpen}>
